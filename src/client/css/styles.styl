@@ -1,0 +1,50 @@
+body
+  background-color #f8f8f8
+
+.matriz-comparacion
+  display grid
+  grid-template-columns 100px 1fr
+  grid-gap 10px
+  table
+    border-collapse collapse
+  thead
+    th
+      background-color #E4E4E4
+      position sticky
+      top 0
+
+.botonera
+  grid-column 1
+  grid-row 1
+
+.sticky
+  position sticky
+  top 0
+  left 0
+
+.nombre-dimension
+  font-size 16px
+  font-weight bold
+  padding-left 48px
+
+.nombre-indicador
+  font-size 14px
+  padding-left 96px
+  padding-top 3px
+  padding-bottom 4px
+
+.la-lista
+  grid-column 2
+  grid-row 1
+  td
+    min-height 28px
+    height 28px
+    vertical-align middle
+    border-left 1px solid #e8e8e8
+
+td.jurind
+  text-align center
+
+tr:nth-child(even)
+  td
+    background-color #f0f0f0

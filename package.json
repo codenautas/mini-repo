@@ -1,0 +1,59 @@
+{
+  "name": "mini-repo",
+  "description": "Mini repositorio",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/server/app-mini-repo.js",
+  "types": "dist/server/app-mini-repo.d.ts",
+  "files": [
+    "dist",
+    "install"
+  ],
+  "dependencies": {
+    "@material-ui/core": "~4.4.3",
+    "@material-ui/icons": "~4.4.3",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
+    "redux": "^4.0.4",
+    "react-redux": "^7.1.1",
+    "ajax-best-promise": "~0.3.7",
+    "backend-plus": "~0.30.30",
+    "best-globals": "~0.10.23",
+    "js-to-html": "~1.0.11",
+    "like-ar": "~0.2.16",
+    "pg-promise-strict": "~1.0.11",
+    "require-bro": "~0.1.13"
+  },
+  "devDependencies": {
+    "@types/mocha": "~5.2.7",
+    "@types/react": "^16.9.4",
+    "@types/react-dom": "^16.9.1",
+    "@types/react-redux": "^7.1.4",
+    "@types/yazl": "~2.4.2",
+    "discrepances": "~0.2.4",
+    "pg-triggers": "~0.2.3",
+    "types.d.ts": "~0.4.9",
+    "mixin-patch": "~0.3.1"
+  },
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "(tsc -p tsconfig-client.json || echo \"continue w/error\") && (tsc -p tsconfig-tests.json || echo \"continue w/error\") && (tsc -p tsconfig-server.json  || echo \"continue w/error\") && (tsc -p tsconfig-unlogged.json || echo \"continue w/error\") && mixin-patch",
+    "watch:buildC": "(tsc -p tsconfig-client.json --watch || echo \"continue w/error\")",
+    "watch:buildS": "(tsc -p tsconfig-server.json --watch || echo \"continue w/error\")",
+    "test": "mocha --reporter spec --bail --check-leaks test/",
+    "start": "node dist/server/server-mini-repo.js",
+    "dump": "npm start -- --dump-db",
+    "dumpb": "(tsc -p tsconfig-server.json  || echo \"continue w/error\") && npm run dump"
+  },
+  "qa-control": {
+    "package-version": "0.3.0",
+    "coverage": 90,
+    "run-in": "server",
+    "stability": "extending",
+    "type": "app",
+    "ecmaVersion": 6
+  }
+}
