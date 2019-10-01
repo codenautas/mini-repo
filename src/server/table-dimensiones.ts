@@ -13,6 +13,7 @@ export function dimensiones(context:TableContext):TableDefinition{
             {name: 'orden'                  ,typeName:'integer'   },
             {name: 'ocultar'                ,typeName:'boolean'   },
             {name: 'icono'                  ,typeName:'text'      },
+            {name: 'color'                  ,typeName:'text'      },
         ],
         primaryKey:['dimension'],
         detailTables:[

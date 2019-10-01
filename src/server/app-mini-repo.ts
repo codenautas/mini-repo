@@ -11,16 +11,18 @@ import {parametros} from "./table-parametros";
 import {Client} from "pg-promise-strict";
 
 import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParameters } from "backend-plus";
+import { Result } from "range-parser";
+import serveContent = require("serve-content");
 
 export type Constructor<T> = new(...args: any[]) => T;
 export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>(Base:T){
   return class AppMiniRepo extends Base{
-    public jurisdicciones:{jurisdiccion:string, nombre:string, avance:string}[]=[];
     constructor(...args:any[]){ 
         super(args); 
     }
     addSchrödingerServices(mainApp:backendPlus.Express, baseUrl:string){
         super.addSchrödingerServices(mainApp, baseUrl);
+        mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
     }
     addLoggedServices(){
         var be=this;
@@ -29,9 +31,6 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
                 var originalCoreFunction=procedureDef.coreFunction;
                 procedureDef.coreFunction = async function(context:ProcedureContext, parameters:CoreFunctionParameters){
                     var result = await originalCoreFunction.call(be,context,parameters)
-                    if(parameters.table=='jurisdicciones'){
-                        await be.leerJurisdiccionesActivas(context.client)
-                    }
                     return result;
                 }
 
@@ -42,7 +41,6 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
     }
     postConfig(){
         super.postConfig();
-        this.leerJurisdiccionesActivas();
     }
     configStaticConfig(){
         super.configStaticConfig();
@@ -76,24 +74,15 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
     }
     async getProcedures(){
         var parentProc = await super.getProcedures();
-        return parentProc.concat(Proceduressigf);
+        return parentProc.concat(ProceduresMiniRepo);
     }
     getMenu(context:Context&ContextRoles){
         var menus:backendPlus.MenuInfoBase[]=[];
         if(context.es.gabinete){
             menus.push(
-                {menuType:'table', name:'mi_jurisdiccion', label:'mi jurisdicción'},
-                {menuType:'menu', name:'comparacion', label:'comparación', selectedByDefault:true, menuContent:[
-                    {menuType:'matriz', name:'matriz', selectedByDefault:true},
-                    {menuType:'table', name:'tabla', table:'matriz_jur_ind'},
-                    {menuType:'table', name:'indicadores'},
-                    {menuType:'table', name:'jurisdicciones'},
-                    {menuType:'table', name:'plana', table:'jur_ind'} ,
-                ]},
-            )
-            menus.push(
                 {menuType:'menu', name:'configurar', menuContent:[
-                    {menuType:'table', name:'agrupacion_principal', label: 'agrupacion principal'} ,
+                    {menuType:'matriz', name:'matriz', selectedByDefault:true},
+                    {menuType:'table', name:'indicadores'},
                     {menuType:'table', name:'dimensiones'} ,
                     {menuType:'table', name:'parametros' } ,
                     {menuType:'table', name:'usuarios'   } ,
@@ -104,16 +93,6 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             menu:menus
         }
         return <backendPlus.MenuDefinition>menu;
-    }
-    async leerJurisdiccionesActivas(client?:Client){
-        var be=this;
-        if(client){
-            be.jurisdicciones = (await client.query('select * from jurisdicciones where avance is not null order by jurisdiccion').fetchAll()).rows;
-        }else{
-            await this.inTransaction(null, async function(client){
-                await be.leerJurisdiccionesActivas(client);
-            })
-        }
     }
     prepareGetTables(){
         super.prepareGetTables();

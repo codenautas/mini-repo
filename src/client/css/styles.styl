@@ -1,50 +1,102 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:700&display=swap');
+
+escaque = 240px
+sep_escaque = 20px
+sep_cajas = 30px
+margen_sup_caja = 0px
+margen_tit_dim = 10px
+sep_sup_titulo = 0px
+
+titulo = (escaque / 2) - (sep_escaque / 2) - margen_sup_caja - sep_cajas - margen_tit_dim  - sep_sup_titulo - (sep_escaque / 2)
+
 body
   background-color #f8f8f8
 
-.matriz-comparacion
-  display grid
-  grid-template-columns 100px 1fr
-  grid-gap 10px
-  table
-    border-collapse collapse
-  thead
-    th
-      background-color #E4E4E4
-      position sticky
-      top 0
+#pizarron
+  font-family: 'Roboto', sans-serif;
+  
+  @media (min-width: 1430px)
+    display grid
+    grid-template-columns repeat(4, 1fr);
+  @media (min-width: 1000px) and (max-width: 1430px)
+    display grid
+    grid-template-columns repeat(4, 1fr);
+  
+  div
+    x-border 1px solid gray
+    x-border-radius 8px
+  
+  .nombre-dimension
+    font-weight bold
+  
+  .nombre-indicador
+    color white
+    font-size 18px
+    font-weight bold
+    padding-left 10px
+    padding-right (@padding-left / 2)
+    padding-top 8px
+    padding-bottom 6px
+    min-height (escaque / 3)
+    x-background rgba(171,169,169,1)
+    background linear-gradient(to bottom, rgba(171,169,169,1) 0%, rgba(171,169,169,0) 100%)
+    x-background: linear-gradient(to bottom, rgba(171,169,169,1) 0%, rgba(171,169,169,0.32) 50%, rgba(171,169,169,0) 100%);
+  
+  .la-lista
+    grid-column 2
+    grid-row 1
+    td
+      min-height 28px
+      height 28px
+      vertical-align middle
+      border-left 1px solid #e8e8e8
+ 
+  tr:nth-child(even)
+    td
+      background-color #f0f0f0
+  
+  .titulo-dimension
+    height titulo
+    margin margen_tit_dim
+    margin-bottom sep_sup_titulo
+    margin-left 20px
+    padding-top 6px
+    overflow hidden
+    font-size 28px
+    x-color #666
+    color #fefefe
+  
+  .caja-dimension
+    overflow hidden
+    margin (sep_cajas / 2)
+    background-color #eee
+    border-radius 10px
+  
+  .caja-int-dimension
+    margin margen_sup_caja
+    display grid
+    grid-template-columns repeat(3, 1fr)
+    @media (min-width: 1000px) and (max-width: 1430px), (min-width: 500px) and (max-width: 720px)
+      grid-template-columns repeat(2, 1fr)
+    @media (max-width: 500px)
+      grid-template-columns repeat(1, 1fr)
+    align-items center
+    justify-items center
+  
+  
+  .caja-indicador
+    width (escaque - sep_escaque)
+    height (escaque - sep_escaque)
+    overflow hidden
+    margin-top (sep_escaque / 2)
+    margin-bottom (sep_escaque / 2)
+    background-size contain
+    background-repeat no-repeat
+    background-position center 80%
+    background-color #f8f8f8
+    border-radius 10px
 
-.botonera
-  grid-column 1
-  grid-row 1
-
-.sticky
-  position sticky
-  top 0
-  left 0
-
-.nombre-dimension
-  font-size 16px
-  font-weight bold
-  padding-left 48px
-
-.nombre-indicador
-  font-size 14px
-  padding-left 96px
-  padding-top 3px
-  padding-bottom 4px
-
-.la-lista
-  grid-column 2
-  grid-row 1
-  td
-    min-height 28px
-    height 28px
-    vertical-align middle
-    border-left 1px solid #e8e8e8
-
-td.jurind
-  text-align center
-
-tr:nth-child(even)
-  td
-    background-color #f0f0f0
+[id-dimension]
+  grid-column span 2
+  grid-row auto
+  
