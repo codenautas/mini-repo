@@ -15,7 +15,10 @@ body
 #pizarron
   font-family: 'Roboto', sans-serif;
   
-  @media (min-width: 1430px)
+  @media (min-width: 2200px)
+    display grid
+    grid-template-columns repeat(6, 1fr);
+  @media (min-width: 1430px) and (max-width: 2200px)
     display grid
     grid-template-columns repeat(4, 1fr);
   @media (min-width: 1000px) and (max-width: 1430px)
