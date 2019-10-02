@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
 
 type Indicador = {
     indicador:string,
@@ -23,15 +24,49 @@ const TituloIndicador = (props:{indicador:Indicador})=>(
     <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion}</div>
 )
 
-const SeccionIndicador = (props:{indicador:Indicador})=>(
-    <div className="caja-indicador-contenedor">
-        <div className="caja-indicador" title={props.indicador.denominacion}
-            style={{backgroundImage:props.indicador.preview?`url("./storage/${props.indicador.dimension}/${props.indicador.preview}")`:''}}
-        >
-            <TituloIndicador indicador={props.indicador}/>
+const SeccionIndicador = (props:{indicador:Indicador})=>{
+    const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+    return <>
+        <div className="caja-indicador-contenedor">
+            <div className="caja-indicador" title={props.indicador.denominacion}
+                style={{backgroundImage:props.indicador.preview?`url("./storage/${props.indicador.dimension}/${props.indicador.preview}")`:''}}
+                onClick={handleClickOpen}
+            >
+                <TituloIndicador indicador={props.indicador}/>
+            </div>
         </div>
-    </div>
-)
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">"props.indicador.dimension||''"</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {props.indicador.abreviacion||''}
+                </DialogContentText>
+                <DialogContentText id="alert-dialog-description">
+                    {props.indicador.denominacion||''}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                    Descargar
+                </Button>
+                <Button onClick={handleClose} color="primary" autoFocus>
+                    Cerrar
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </>;
+}
 
 const TituloDimension = (props:{dimension:Dimension})=>(
     <div className="titulo-dimension-contenedor">
