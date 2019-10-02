@@ -1,6 +1,6 @@
 export const defConfig=`
 server:
-  port: 3030
+  port: 3040
   base-url: /mini-repo
   session-store: memory-saved
 db:

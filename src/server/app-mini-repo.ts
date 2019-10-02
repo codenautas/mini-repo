@@ -7,6 +7,7 @@ import {defConfig} from "./def-config"
 import {usuarios} from "./table-usuarios";
 import {dimensiones} from "./table-dimensiones";
 import {indicadores} from "./table-indicadores";
+import {indicadores_textos} from "./table-indicadores_textos";
 import {parametros} from "./table-parametros";
 import {Client} from "pg-promise-strict";
 
@@ -86,6 +87,8 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
                     {menuType:'table', name:'dimensiones'} ,
                     {menuType:'table', name:'parametros' } ,
                     {menuType:'table', name:'usuarios'   } ,
+                    {menuType:'proc',  name:'excel_leer', label:'leer excel' } ,
+                    {menuType:'table', name:'indicadores_textos'},
                 ]},
             )
         }
@@ -100,6 +103,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             ...this.getTableDefinition,
             dimensiones,
             indicadores,
+            indicadores_textos,
             usuarios,
             parametros,
         }
