@@ -9,6 +9,28 @@ sep_sup_titulo = 0
 
 titulo = 10%
 
+[mis-columnas]
+  display none
+
+
+tamannio-letra(titulo_indicador, pastillas)
+  .nombre-indicador
+    font-size titulo_indicador
+  .titulo-dimension
+    font-size (titulo_indicador*1.7*pastillas/3)
+  .caja-int-dimension
+    grid-template-columns repeat(pastillas, 1fr)
+  if pastillas == 3 
+    [mis-columnas="3"]
+      display block
+  if pastillas == 2
+    [mis-columnas="2"]
+      display block
+
+tres-columnas()
+
+dos-columnas()
+
 body
   background-color #f8f8f8
 
@@ -18,45 +40,27 @@ body
   @media (min-width: 2060px)
     display grid
     grid-template-columns repeat(4, 1fr);
-    .nombre-indicador
-      font-size 0.7vw
-    .caja-int-dimension
-      grid-template-columns repeat(3, 1fr)
+    tamannio-letra(0.7vw, 3)
   @media (min-width: 1560px) and (max-width: 2060px)
     display grid
     grid-template-columns repeat(3, 1fr);
-    .nombre-indicador
-      font-size 1vw
-    .caja-int-dimension
-      grid-template-columns repeat(3, 1fr)
+    tamannio-letra(1vw, 3)
   @media (min-width: 1060px) and (max-width: 1560px)
     display grid
     grid-template-columns repeat(3, 1fr);
-    .nombre-indicador
-      font-size 1.4vw
-    .caja-int-dimension
-      grid-template-columns repeat(2, 1fr)
+    tamannio-letra(1.4vw, 2)
   @media (min-width: 720px) and (max-width: 1060px)
     display grid
     grid-template-columns repeat(2, 1fr);
-    .nombre-indicador
-      font-size 2vw
-    .caja-int-dimension
-      grid-template-columns repeat(2, 1fr)
+    tamannio-letra(2vw, 2)
   @media (min-width: 600px) and (max-width: 720px)
     display grid
     grid-template-columns repeat(1, 1fr);
-    .nombre-indicador
-      font-size 2.4vw
-    .caja-int-dimension
-      grid-template-columns repeat(3, 1fr)
+    tamannio-letra(2.6vw, 3)
   @media                         (max-width: 600px)
     display grid
     grid-template-columns repeat(1, 1fr);
-    .nombre-indicador
-      font-size 3.2vw
-    .caja-int-dimension
-      grid-template-columns repeat(2, 1fr)
+    tamannio-letra(3.6vw, 2)
 
   div
     x-border 1px solid gray
@@ -90,14 +94,23 @@ body
     td
       background-color #f0f0f0
   
-  .titulo-dimension
-    height titulo
+
+  .titulo-dimension-contenedor
+    padding-bottom 8%
+    width 97%
+    position relative
     margin margen_tit_dim
     margin-bottom sep_sup_titulo
-    margin-left 20px
+    margin-left 3%
+
+  .titulo-dimension
+    position absolute
+    left 0
+    right 0
+    top 0
+    bottom 0
     padding-top 6px
     overflow hidden
-    font-size 28px
     x-color #666
     color #fefefe
   

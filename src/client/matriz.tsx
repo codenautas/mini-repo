@@ -34,25 +34,42 @@ const SeccionIndicador = (props:{indicador:Indicador})=>(
 )
 
 const TituloDimension = (props:{dimension:Dimension})=>(
-    <div className="titulo-dimension">
-        <span className="nombre-dimension" >{props.dimension.denominacion}</span>
+    <div className="titulo-dimension-contenedor">
+        <div className="titulo-dimension">
+            <span className="nombre-dimension" >{props.dimension.denominacion}</span>
+        </div>
     </div>
 )
 
 const SeccionDimension = (props:{dimension:Dimension})=>(
-    <div className="caja-dimension" id-dimension={props.dimension.dimension} 
-        style={{
-            backgroundColor:props.dimension.color,
-            gridRow:'span '+(Math.floor((props.dimension.indicadores.length+2)/3)*2+1)
-        }} 
-    >
-        <TituloDimension dimension={props.dimension} />
-        <div className="caja-int-dimension">
-            {props.dimension.indicadores.map( indicador =>
-                <SeccionIndicador indicador={indicador} key={indicador.indicador}/>
-            )}
+    <>
+        <div className="caja-dimension" id-dimension={props.dimension.dimension} mis-columnas="2"
+            style={{
+                backgroundColor:props.dimension.color,
+                gridRow:'span '+(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)
+            }} 
+        >
+            <TituloDimension dimension={props.dimension} />
+            <div className="caja-int-dimension">
+                {props.dimension.indicadores.map( indicador =>
+                    <SeccionIndicador indicador={indicador} key={indicador.indicador}/>
+                )}
+            </div>
         </div>
-    </div>
+        <div className="caja-dimension" id-dimension={props.dimension.dimension} mis-columnas="3"
+            style={{
+                backgroundColor:props.dimension.color,
+                gridRow:'span '+(Math.floor((props.dimension.indicadores.length+3-1)/3)*2+1)
+            }} 
+        >
+            <TituloDimension dimension={props.dimension} />
+            <div className="caja-int-dimension">
+                {props.dimension.indicadores.map( indicador =>
+                    <SeccionIndicador indicador={indicador} key={indicador.indicador}/>
+                )}
+            </div>
+        </div>
+    </>
 )
 
 const ListaIndicadores = (props:{dimensiones:Dimension[]}) => (
