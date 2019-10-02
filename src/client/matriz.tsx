@@ -24,10 +24,12 @@ const TituloIndicador = (props:{indicador:Indicador})=>(
 )
 
 const SeccionIndicador = (props:{indicador:Indicador})=>(
-    <div className="caja-indicador" title={props.indicador.denominacion}
-        style={{backgroundImage:props.indicador.preview?`url("./storage/${props.indicador.dimension}/${props.indicador.preview}")`:''}}
-    >
-        <TituloIndicador indicador={props.indicador}/>
+    <div className="caja-indicador-contenedor">
+        <div className="caja-indicador" title={props.indicador.denominacion}
+            style={{backgroundImage:props.indicador.preview?`url("./storage/${props.indicador.dimension}/${props.indicador.preview}")`:''}}
+        >
+            <TituloIndicador indicador={props.indicador}/>
+        </div>
     </div>
 )
 
