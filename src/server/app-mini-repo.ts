@@ -3,6 +3,7 @@ import * as backendPlus from "backend-plus";
 import {ProceduresMiniRepo} from "./procedures-mini-repo";
 import {ContextRoles} from "./types-mini-repo";
 import {defConfig} from "./def-config"
+import * as  MiniTools from "mini-tools";
 
 import {usuarios} from "./table-usuarios";
 import {dimensiones} from "./table-dimensiones";
@@ -22,7 +23,12 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         super(args); 
     }
     addSchrödingerServices(mainApp:backendPlus.Express, baseUrl:string){
+        var be=this;
         super.addSchrödingerServices(mainApp, baseUrl);
+        mainApp.get(baseUrl+'/vi',function(req,res,_next){
+            var {useragent} = req;
+            return MiniTools.serveText(be.mainPage({useragent}, false, {skipMenu:true}).toHtmlDoc(),'html')(req,res);
+        });
         mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
     }
     addLoggedServices(){
@@ -47,17 +53,22 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         super.configStaticConfig();
         this.setStaticConfig(defConfig);
     }
-    clientIncludes(req:Request, hideBEPlusInclusions:boolean){
+    clientIncludes(req:Request, opts:any){
+        var loggedResources=req || opts && !opts.skipMenu ? [
+            {type:'js' , src:'client.js' },
+        ]:[
+            {type:'js' , src:'unlogged.js' },
+        ];
         return [
             { type: 'js', module: 'react', modPath: 'umd', file:'react.development.js', fileProduction:'react.production.min.js' },
             { type: 'js', module: 'react-dom', modPath: 'umd', file:'react-dom.development.js', fileProduction:'react-dom.production.min.js' },
             // { type: 'js', module: '@material-ui', modPath: 'core/umd', file:'material-ui.development.js', fileProduction:'material-ui.production.min.js' },
             { type: 'js', module: '@material-ui/core', modPath: 'umd', file:'material-ui.development.js', fileProduction:'material-ui.production.min.js' },
-            ...super.clientIncludes(req, hideBEPlusInclusions),
+            ...super.clientIncludes(req, opts),
+            {type:'css', file:'styles.css'},
             {type:'js' , src:'adapt.js' },
             {type:'js' , src:'matriz.js' },
-            {type:'js' , src:'client.js' },
-            {type:'css', file:'styles.css'},
+            ...loggedResources
         ];
     }
     getContextForDump(){

@@ -1,7 +1,7 @@
 import {html} from "js-to-html";
 import * as TypedControls from "typed-controls";
 import * as bestGlobals from "best-globals";
-import {mostrar} from "./matriz";
+import {mostrar} from "../unlogged/matriz";
 import * as likeAr from "like-ar";
 
 var datetime=bestGlobals.datetime;
@@ -48,3 +48,6 @@ myOwn.autoSetupFunctions.push(
     }
 );
 
+if(window.myStart){
+    alert('my-start')
+}
