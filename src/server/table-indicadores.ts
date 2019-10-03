@@ -16,7 +16,7 @@ export function indicadores(context:TableContext):TableDefinition{
             {name:'archivo'                  , title:'archivo'                               , typeName:'text'},
             {name:'preview'                  , title:'archivo gráfico'                       , typeName:'text'},
             {name:'orden'                    , title:'orden'                                 , typeName:'integer' },
-            {name:'fte'                      , title:'fuente'                                , typeName:'text'},
+            {name:'fuente'                   , title:'fuente'                                , typeName:'text'},
             {name:'um'                       , title:'unidad de medida'                      , typeName:'text'},
             {name:'universo'                 , title:'universo'                              , typeName:'text'},
             {name:'def_con'                  , title:'definición conceptual'                 , typeName:'text'},
@@ -30,7 +30,7 @@ export function indicadores(context:TableContext):TableDefinition{
         primaryKey:['indicador'],
         foreignKeys:[
             {references:'dimensiones', fields:['dimension']},
-            // {references:'fte'  , fields:['fte']},
+            // {references:'fuente'  , fields:['fuente']},
             // {references:'um'   , fields:['um']}
         ],
         sql:{

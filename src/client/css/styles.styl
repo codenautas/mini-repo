@@ -9,10 +9,6 @@ sep_sup_titulo = 0
 
 titulo = 10%
 
-[mis-columnas]
-  display none
-
-
 tamannio-letra(titulo_indicador, pastillas)
   .nombre-indicador
     font-size titulo_indicador
@@ -21,10 +17,10 @@ tamannio-letra(titulo_indicador, pastillas)
   .caja-int-dimension
     grid-template-columns repeat(pastillas, 1fr)
   if pastillas == 3 
-    [mis-columnas="3"]
+    div[mis-columnas="3"]
       display block
   if pastillas == 2
-    [mis-columnas="2"]
+    div[mis-columnas="2"]
       display block
 
 tres-columnas()
@@ -36,6 +32,9 @@ body
 
 #pizarron
   font-family: 'Roboto', sans-serif;
+
+  [mis-columnas]
+    display none
   
   @media (min-width: 2060px)
     display grid
@@ -145,6 +144,12 @@ body
     background-color #f8f8f8
     border-radius 10px
 
-[id-dimension]
-  grid-row auto
-  
+  [id-dimension]
+    grid-row auto
+
+.img-preview
+  float left
+  margin 12px
+  max-width 50%
+  &[full-width=full]
+    max-width 100%

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
+import { useMediaQuery, useTheme} from "@material-ui/core";
 
 type Indicador = {
     indicador:string,
@@ -9,8 +10,14 @@ type Indicador = {
     dimension:string,
     archivo:string,
     preview:string,
-    fte:string,
+    fuente:string,
     um:string
+    universo:string
+    def_con:string
+    def_ope:string
+    cob:string
+    desagregaciones:string
+    uso_alc_lim:string
 }
 
 type Dimension = {
@@ -24,7 +31,29 @@ const TituloIndicador = (props:{indicador:Indicador})=>(
     <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion}</div>
 )
 
+const CampoFicha = (props:{valor:string, nombre:string}) =>
+    <>{props.valor?
+        <DialogContentText id="alert-dialog-description">
+            <span className="ficha-nombre">{props.nombre}: </span>
+            <b className="ficha-valor">{props.valor}</b>
+        </DialogContentText>
+    :null}</>;
+
+const ImagenPreview = (props:{indicador:Indicador}) => {
+    const [fullWidth, setFullWidth] = React.useState(false);
+    return <>{props.indicador.preview?
+        <img 
+            className="img-preview" 
+            full-width={fullWidth?"full":"normal"} 
+            src={`./storage/${props.indicador.dimension}/${props.indicador.preview}`}
+            onClick={()=>setFullWidth(!fullWidth)}
+        />
+    :null}</>;
+}
+
 const SeccionIndicador = (props:{indicador:Indicador})=>{
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = React.useState(false);
     const handleClickOpen = () => {
         setOpen(true);
@@ -42,12 +71,16 @@ const SeccionIndicador = (props:{indicador:Indicador})=>{
             </div>
         </div>
         <Dialog
+          className="fila-indicador"
           open={open}
           onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullScreen={fullScreen}
+          maxWidth="lg"
+          fullWidth={true}
         >
-            <DialogTitle id="alert-dialog-title">"props.indicador.dimension||''"</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{props.indicador.dimension||''}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                     {props.indicador.abreviacion||''}
@@ -55,6 +88,15 @@ const SeccionIndicador = (props:{indicador:Indicador})=>{
                 <DialogContentText id="alert-dialog-description">
                     {props.indicador.denominacion||''}
                 </DialogContentText>
+                <ImagenPreview indicador={props.indicador}/>
+                <CampoFicha valor={props.indicador.fuente}   nombre="fuente"/>
+                <CampoFicha valor={props.indicador.um}       nombre="unidad de medida"/>
+                <CampoFicha valor={props.indicador.universo} nombre="universo"/>
+                <CampoFicha valor={props.indicador.def_con}  nombre="definición conceptual"/>
+                <CampoFicha valor={props.indicador.def_ope}  nombre="definición operativa"/>
+                <CampoFicha valor={props.indicador.cob}      nombre="cobertura"/>
+                <CampoFicha valor={props.indicador.desagregaciones} nombre="desagregaciones"/>
+                <CampoFicha valor={props.indicador.uso_alc_lim} nombre="uso, alcances y limitaciones"/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
