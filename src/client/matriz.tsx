@@ -78,7 +78,6 @@ const SeccionIndicador = (props:{indicador:Indicador})=>{
           aria-describedby="alert-dialog-description"
           fullScreen={fullScreen}
           maxWidth="lg"
-          fullWidth={true}
         >
             <DialogTitle id="alert-dialog-title">{props.indicador.dimension||''}</DialogTitle>
             <DialogContent>
