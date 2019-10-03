@@ -54,7 +54,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         this.setStaticConfig(defConfig);
     }
     clientIncludes(req:Request, opts:any){
-        var loggedResources=req || opts && !opts.skipMenu ? [
+        var loggedResources=req && opts && !opts.skipMenu ? [
             {type:'js' , src:'client.js' },
         ]:[
             {type:'js' , src:'unlogged.js' },

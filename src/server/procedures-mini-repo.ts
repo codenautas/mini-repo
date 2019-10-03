@@ -18,6 +18,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
     {
         action:'matriz_traer',
         parameters:[],
+        unlogged:true,
         coreFunction:async function(context:ProcedureContext,_parameters:CoreFunctionParameters){
             var sql3=`
                 SELECT *
