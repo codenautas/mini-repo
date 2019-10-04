@@ -1,7 +1,7 @@
 {
   "name": "mini-repo",
   "description": "Mini repositorio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/server/app-mini-repo.js",
   "types": "dist/server/app-mini-repo.d.ts",
@@ -17,7 +17,7 @@
     "redux": "^4.0.4",
     "react-redux": "^7.1.1",
     "ajax-best-promise": "~0.3.7",
-    "backend-plus": "~0.31.0",
+    "backend-plus": "~0.31.1",
     "best-globals": "~0.10.23",
     "js-to-html": "~1.0.11",
     "like-ar": "~0.2.16",
