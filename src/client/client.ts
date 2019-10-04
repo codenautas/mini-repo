@@ -2,7 +2,9 @@ import {html} from "js-to-html";
 import * as TypedControls from "typed-controls";
 import * as bestGlobals from "best-globals";
 import {mostrar} from "./matriz";
+import {previsualizarImagen} from "./adjuntos";
 import * as likeAr from "like-ar";
+import * as DialogPromise from "dialog-promise";
 
 var datetime=bestGlobals.datetime;
 var changing=bestGlobals.changing;
@@ -48,3 +50,54 @@ myOwn.autoSetupFunctions.push(
     }
 );
 
+myOwn.clientSides.subirAdjunto = {
+    prepare: function(depot:myOwn.Depot, fieldName:string){
+        var boton = html.button('Cargar imagen').create();
+        depot.rowControls[fieldName].appendChild(boton);
+        boton.addEventListener('click', function(){
+            var disableKeysFun = function(){
+                DialogPromise.defaultOpts.disableKeyboads=true;
+            }
+            DialogPromise.defaultOpts.disableKeyboads=false;
+            var adjuntoDivId = "cargar-adjunto";
+            var imgId = "img-adjunto";
+            var adjuntoDiv = html.div({id:adjuntoDivId},[]).create();
+            var botonAceptar = html.button({}, 'aceptar').create()
+            botonAceptar.onclick=function(){
+                var img = document.getElementById(imgId) as HTMLImageElement;
+                if(img.src){
+                    //grabar imagen
+                }
+                //cerrar dialog
+            };
+            var botonCancelar = html.button({}, 'cancelar').create()
+            botonCancelar.onclick=function(){
+                //cerrar dialog
+            };
+            var mainContainerDiv = html.div({id:'cargar-adjunto-main'},[
+                adjuntoDiv,
+                botonAceptar,
+                botonCancelar
+            ]).create();
+            var opts = {
+                buttonsDef:[]
+            };
+            confirmPromise(mainContainerDiv,opts).then(disableKeysFun).catch(disableKeysFun);
+            previsualizarImagen(imgId, adjuntoDivId);
+        });
+        return boton;  
+    }
+}
+
+myOwn.clientSides.bajarAdjunto = {
+    update:function(depot:myOwn.Depot, fieldName:string):void{
+        let td=depot.rowControls[fieldName];
+        td.style.visibility=depot.row.fecha?'visible':'hidden';
+    },
+    prepare:function(depot:myOwn.Depot, fieldName:string):void{
+        let td=depot.rowControls[fieldName];
+        let fileName=depot.row.nombre+'.'+depot.row.ext;
+        let bajar = html.a({href:'file?id_adjunto='+depot.row.id_adjunto, download:fileName},"bajar").create();
+        td.appendChild(bajar);
+    }
+}

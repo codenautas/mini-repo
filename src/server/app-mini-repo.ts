@@ -56,6 +56,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             ...super.clientIncludes(req, hideBEPlusInclusions),
             {type:'js' , src:'adapt.js' },
             {type:'js' , src:'matriz.js' },
+            {type:'js' , src:'adjuntos.js' },
             {type:'js' , src:'client.js' },
             {type:'css', file:'styles.css'},
         ];
