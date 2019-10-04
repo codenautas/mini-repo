@@ -1,8 +1,9 @@
 import {html} from "js-to-html";
 import * as TypedControls from "typed-controls";
 import * as bestGlobals from "best-globals";
-import {mostrar} from "./matriz";
+import {mostrar} from "../unlogged/matriz";
 import {previsualizarImagen} from "./adjuntos";
+
 import * as likeAr from "like-ar";
 import * as DialogPromise from "dialog-promise";
 
@@ -31,7 +32,6 @@ myOwn.clientSides.color_pick={
         }
     }
 };
-
 
 myOwn.autoSetupFunctions.push(
     async function getReferences(){
@@ -100,4 +100,8 @@ myOwn.clientSides.bajarAdjunto = {
         let bajar = html.a({href:'file?id_adjunto='+depot.row.id_adjunto, download:fileName},"bajar").create();
         td.appendChild(bajar);
     }
+}
+
+if(window.myStart){
+    alert('my-start')
 }

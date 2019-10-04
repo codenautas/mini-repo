@@ -44,6 +44,7 @@ login:
     allowHttpLogin: true
     fileStore: false
     skipCheckAlreadyLoggedIn: true
+    noLoggedUrlPath: /vi
     loginForm:
       formTitle: mini-repo
       usernameLabel: usuario
