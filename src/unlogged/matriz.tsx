@@ -29,7 +29,7 @@ type Dimension = {
 
 import { AppBar, Toolbar, IconButton, Typography, InputBase, SvgIcon, makeStyles } from '@material-ui/core';
 // import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles';
-const { createStyles, fade, Theme } = styled;
+// const { createStyles, fade, Theme } = styled;
 
 
 // https://material-ui.com/components/material-icons/
@@ -41,6 +41,11 @@ export const materialIoIconsSvgPath:{[k:string]:string}={
     LocalAtm: "M11 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1h-3v-1h4V8h-2V7h-2v1h-1c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3v1H9v2h2v1zm9-13H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z",
     Menu:"M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
     SearchIcon:""
+}
+
+// FROM: .../node_modules/@material-ui/core/umd/material-ui.development.js
+function fade(color, value) {
+    return color
 }
 
 const MenuIcon = () =>
