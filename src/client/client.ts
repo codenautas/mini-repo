@@ -122,17 +122,17 @@ myOwn.clientSides.subirAdjunto = {
 
 myOwn.clientSides.bajarAdjunto = {
     update:function(depot:myOwn.Depot, fieldName:string):void{
-        let td=depot.rowControls[fieldName];
-        //refresco links cuando se actualizan nombres de archivos
-        td.innerHTML='';
-        let imagenFileName=depot.row.preview;
-        let excelFileName=depot.row.archivo;
-        let bajarImagen = html.a({class:'link-descarga-archivo', href:`download/file?name=${imagenFileName}&dimension=${depot.row.dimension}`, download:imagenFileName},"imagen").create();
-        let bajarExcel = html.a({class:'link-descarga-archivo', href:`download/file?name=${excelFileName}&dimension=${depot.row.dimension}`, download:excelFileName},"excel").create();
-        td.appendChild(bajarExcel);
-        td.appendChild(bajarImagen);
     },
     prepare:function(depot:myOwn.Depot, fieldName:string):void{
+        let td=depot.rowControls[fieldName];
+        let imagenFileName=depot.row.preview;
+        if(imagenFileName){
+            td.appendChild(html.a({class:'link-descarga-archivo', href:`download/file?name=${imagenFileName}&dimension=${depot.row.dimension}`, download:imagenFileName},"imagen").create());
+        }
+        let excelFileName=depot.row.archivo;
+        if(excelFileName){
+            td.appendChild(html.a({class:'link-descarga-archivo', href:`download/file?name=${excelFileName}&dimension=${depot.row.dimension}`, download:excelFileName},"excel").create());            
+        }
     }
 }
 
