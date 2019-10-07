@@ -95,11 +95,11 @@ myOwn.clientSides.subirAdjunto = {
                     })
                     depot.rowControls.preview.setTypedValue(result.nombre);
                 }
-                //cerrar dialog
+                mainContainerDiv.dialogPromiseDone();
             };
             var botonCancelar = html.button({}, 'cancelar').create()
             botonCancelar.onclick=function(){
-                //cerrar dialog
+                mainContainerDiv.dialogPromiseDone();
             };
             var mainContainerDiv = html.div({id:'cargar-adjunto-main'},[
                 adjuntoDiv,
