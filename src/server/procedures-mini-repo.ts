@@ -133,7 +133,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             let ext = Path.extname(file.path).substr(1);
             // let originalFilename = file.originalFilename.slice(0,-(ext.length+1));
             let originalFilename = file.originalFilename;
-            let filename=`${parameters.indicador}-${originalFilename}`;
+            let filename=originalFilename;
             var createResponse = function createResponse(adjuntoRow:any){
                 let resultado = {
                     message: `el archivo ${adjuntoRow[campoDef.nombre]} se subió correctamente.`,
