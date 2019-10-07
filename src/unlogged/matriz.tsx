@@ -158,7 +158,7 @@ const CampoFicha = (props:{valor:string, nombre:string}) =>
     <>{props.valor?
         <DialogContentText id="alert-dialog-description">
             <span className="ficha-nombre">{props.nombre}: </span>
-            <b className="ficha-valor">{props.valor}</b>
+            <span className="ficha-valor">{props.valor}</span>
         </DialogContentText>
     :null}</>;
 
@@ -174,7 +174,7 @@ const ImagenPreview = (props:{indicador:Indicador}) => {
     :null}</>;
 }
 
-const SeccionIndicador = (props:{indicador:Indicador})=>{
+const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = React.useState(false);
@@ -202,7 +202,7 @@ const SeccionIndicador = (props:{indicador:Indicador})=>{
           fullScreen={fullScreen}
           maxWidth="lg"
         >
-            <DialogTitle id="alert-dialog-title">{props.indicador.dimension||''}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                     {props.indicador.abreviacion||''}
@@ -211,12 +211,12 @@ const SeccionIndicador = (props:{indicador:Indicador})=>{
                     {props.indicador.denominacion||''}
                 </DialogContentText>
                 <ImagenPreview indicador={props.indicador}/>
-                <CampoFicha valor={props.indicador.fuente}   nombre="fuente"/>
-                <CampoFicha valor={props.indicador.um}       nombre="unidad de medida"/>
-                <CampoFicha valor={props.indicador.universo} nombre="universo"/>
-                <CampoFicha valor={props.indicador.def_con}  nombre="definición conceptual"/>
-                <CampoFicha valor={props.indicador.def_ope}  nombre="definición operativa"/>
-                <CampoFicha valor={props.indicador.cob}      nombre="cobertura"/>
+                <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
+                <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
+                <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
+                <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
+                <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
+                <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
                 <CampoFicha valor={props.indicador.desagregaciones} nombre="desagregaciones"/>
                 <CampoFicha valor={props.indicador.uso_alc_lim} nombre="uso, alcances y limitaciones"/>
             </DialogContent>
@@ -249,7 +249,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>(
             <TituloDimension dimension={props.dimension} />
             <div className="caja-int-dimension">
                 {props.dimension.indicadores.map( indicador =>
-                    <SeccionIndicador indicador={indicador} key={indicador.indicador}/>
+                    <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
                 )}
             </div>
         </div>
@@ -262,7 +262,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>(
             <TituloDimension dimension={props.dimension} />
             <div className="caja-int-dimension">
                 {props.dimension.indicadores.map( indicador =>
-                    <SeccionIndicador indicador={indicador} key={indicador.indicador}/>
+                    <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
                 )}
             </div>
         </div>
