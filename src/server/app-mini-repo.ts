@@ -4,28 +4,50 @@ import {ProceduresMiniRepo} from "./procedures-mini-repo";
 import {ContextRoles} from "./types-mini-repo";
 import {defConfig} from "./def-config"
 import * as  MiniTools from "mini-tools";
+import * as yazl from "yazl";
+import * as fs from "fs-extra";
+import { changing } from "best-globals";
 
 import {usuarios} from "./table-usuarios";
 import {dimensiones} from "./table-dimensiones";
 import {indicadores} from "./table-indicadores";
 import {indicadores_textos} from "./table-indicadores_textos";
 import {parametros} from "./table-parametros";
-import {Client} from "pg-promise-strict";
 
 import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParameters } from "backend-plus";
-import { Result } from "range-parser";
 import serveContent = require("serve-content");
+
+async function recurseDir(root:string, base:string, callback:(path:string, fileName:string)=>Promise<void>){
+    let files = await fs.readdir(base);
+    await Promise.all(files.map(async function (fileName:string) {
+        var path = base + '/' + fileName;
+        var stat = await fs.stat(root + path);
+        if (stat.isFile) {
+            await callback(root + path, path);
+        }else if(stat.isDirectory){
+            await recurseDir(root, path, callback);
+        }
+    }));
+    
+}
 
 export type Constructor<T> = new(...args: any[]) => T;
 export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>(Base:T){
   return class AppMiniRepo extends Base{
     constructor(...args:any[]){ 
         super(args); 
+        // @ts-ignore los mensajes existen en backend-plus!
+        var messages = this.messages = this.messages || {};
+        this.messages = messages = changing(messages, {
+            fileUploaded: 'archivo subido',
+
+        })
     }
     addSchrödingerServices(mainApp:backendPlus.Express, baseUrl:string){
         var be=this;
         super.addSchrödingerServices(mainApp, baseUrl);
         mainApp.get(baseUrl+'/vi',function(req,res,_next){
+            // @ts-ignore sé que voy a recibir useragent por los middlewares de Backend-plus
             var {useragent} = req;
             return MiniTools.serveText(be.mainPage({useragent}, false, {skipMenu:true}).toHtmlDoc(),'html')(req,res);
         });
@@ -45,6 +67,27 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             return procedureDef;
         })
         super.addLoggedServices();
+        this.app.get('/download/file', async function (req, res) {
+            let result = await be.inTransaction(req, (client) => client.query("select ruta from adjuntos where id_adjunto = $1", [req.query.id_adjunto])
+                .fetchUniqueValue());
+            var path = result.value;
+            MiniTools.serveFile(path, {})(req, res);
+        });
+        this.app.get('/download/all', async function (req, res, next) {
+            // @ts-ignore uso mi user!
+            var user = req.user;
+            if (user == null || user.rol != 'admin') {
+                console.log('no está autorizado a bajarse todo', user);
+                return next();
+            }
+            let zip = new yazl.ZipFile();
+            zip.outputStream.pipe(res);
+            let base = 'local-attachments';
+            await recurseDir(base+'/', '', async function(path, fileName){
+                return zip.addFile(path, fileName);
+            });
+            zip.end();
+        });
     }
     postConfig(){
         super.postConfig();
@@ -97,13 +140,17 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         var menus:backendPlus.MenuInfoBase[]=[];
         if(context.es.gabinete){
             menus.push(
-                {menuType:'menu', name:'configurar', menuContent:[
+                {menuType:'menu', name:'ver', menuContent:[
                     {menuType:'matriz', name:'matriz', selectedByDefault:true},
+                ], selectedByDefault:true},
+                {menuType:'menu', name:'datos', menuContent:[
+                    {menuType:'table', name:'dimensiones', selectedByDefault:true} ,
                     {menuType:'table', name:'indicadores'},
-                    {menuType:'table', name:'dimensiones'} ,
+                    {menuType:'proc' , name:'excel_leer', label:'publicar' } ,
+                ]},
+                {menuType:'menu', name:'configurar', menuContent:[
                     {menuType:'table', name:'parametros' } ,
                     {menuType:'table', name:'usuarios'   } ,
-                    {menuType:'proc',  name:'excel_leer', label:'leer excel' } ,
                     {menuType:'table', name:'indicadores_textos'},
                 ]},
             )

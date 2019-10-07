@@ -1,10 +1,11 @@
 "use strict";
 
 import { ProcedureDef } from "./types-mini-repo";
-import { ProcedureContext, CoreFunctionParameters } from "backend-plus";
+import { ProcedureContext, CoreFunctionParameters, UploadedFileInfo } from "backend-plus";
 export * from "./types-mini-repo";
 import * as fs from "fs-extra";
 import * as XLSX from "xlsx-style";
+import * as Path from "path";
 
 import * as bestGlobals from "best-globals";
 import * as likeAr from 'like-ar';
@@ -97,68 +98,67 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             };
             return 'ok';
         }
-    },{
-        action:'archivo_bajar',
+    },
+    {
+        action:'archivo_subir',
         progress: true,
         parameters:[
-            {name: 'nombre'   , typeName: 'text'},
-            {name: 'dimension', typeName: 'text'}
+            {name: 'campo'    , typeName: 'text'},
+            {name: 'indicador', typeName: 'text'}
         ],
         files:{count:1},
-        coreFunction:function(context, parameters, files){
-            let be=context.be;
-            context.informProgress(be.messages.fileUploaded);
-            let file = files[0]
-            let ext = path.extname(file.path).substr(1);
-            let originalFilename = file.originalFilename.slice(0,-(ext.length+1));
-            let filename= originalFilename;
-            let newPath = `local-attachments/${parameters.dimension}/${parameters.nombre}`;
-            var createResponse = function createResponse(adjuntoRow){
+        coreFunction:async function(context, parameters, files){
+            const be=context.be;
+            const client=context.client;
+            const campos:{[k:string]:{
+                nombre:string
+                sqlset:string
+            }}={
+                preview:{
+                    nombre:'preview',
+                    sqlset:`preview = coalesce(preview, $1, replace(archivo,'.xlsx','.png'))`
+                },
+                archivo:{
+                    nombre:'archivo',
+                    sqlset:`archivo = coalesce(archivo, $1)`
+                },
+            };
+            if(!(parameters.campo in campos)){
+                throw new Error('invalid')
+            }
+            const campoDef = campos[parameters.campo];
+            context.informProgress({message:be.messages.fileUploaded});
+            let file = files![0]
+            let ext = Path.extname(file.path).substr(1);
+            // let originalFilename = file.originalFilename.slice(0,-(ext.length+1));
+            let originalFilename = file.originalFilename;
+            let filename=originalFilename;
+            var createResponse = function createResponse(adjuntoRow:any){
                 let resultado = {
                     message: 'La subida se realizó correctamente (update)',
-                    nombre: adjuntoRow.nombre,
-                    nombre_original: adjuntoRow.nombre_original,
-                    ext: adjuntoRow.ext,
-                    fecha: adjuntoRow.fecha,
-                    hora: adjuntoRow.hora,
-                    id_adjunto: adjuntoRow.id_adjunto
+                    // nombre: adjuntoRow.nombre,
+                    // nombre_original: adjuntoRow.nombre_original,
+                    // ext: adjuntoRow.ext,
+                    // fecha: adjuntoRow.fecha,
+                    // hora: adjuntoRow.hora,
+                    // id_adjunto: adjuntoRow.id_adjunto
                 }
                 return resultado
             }
-            var moveFile = function moveFile(file, id_adjunto, extension){
-                fs.move(file.path, newPath + id_adjunto + '.' + extension, { overwrite: true });
+            var moveFile = async function moveFile(file:UploadedFileInfo, dimension:string, fileName:string){
+                let newPath = `local-attachments/${dimension}/${fileName}`;
+                return fs.move(file.path, newPath, { overwrite: true });
             }
-            return Promise.resolve().then(function(){
-                if(parameters.id_adjunto){
-                    return context.client.query(`update adjuntos set nombre= $1,nombre_original = $2, ext = $3, ruta = concat('local-attachments/file-',$4::text,'.',$3::text), fecha = now(), hora = date_trunc('seconds',current_timestamp-current_date)
-                        where id_adjunto = $4 returning *`,
-                        [filename, originalFilename, ext, parameters.id_adjunto]
-                    ).fetchUniqueRow().then(function(result){
-                        return createResponse(result.row)
-                    }).then(function(resultado){
-                        moveFile(file,resultado.id_adjunto,resultado.ext);
-                        return resultado
-                    });
-                }else{
-                    return context.client.query(`insert into adjuntos (nombre, nombre_original, ext, fecha, hora) values ($1,$2,$3,now(), date_trunc('seconds',current_timestamp-current_date)) returning *`,
-                        [filename, originalFilename, ext]
-                    ).fetchUniqueRow().then(function(result){
-                        return context.client.query(`update adjuntos set ruta = concat('local-attachments/file-',id_adjunto::text,'.',ext)
-                            where id_adjunto = $1 returning *`,
-                            [result.row.id_adjunto]
-                        ).fetchUniqueRow().then(function(result){
-                            return createResponse(result.row)
-                        }).then(function(resultado){
-                            moveFile(file,resultado.id_adjunto,resultado.ext);
-                            return resultado
-                        });
-                    });
-                }
-            }).catch(function(err){
-                console.log('ERROR',err.message);
-                throw err;
-            });
+            var {row} = await client.query(`
+                update indicadores 
+                    set ${campoDef.sqlset}
+                    where indicador = $2 returning *
+            `,
+                [filename, parameters.indicador]
+            ).fetchUniqueRow();
+            var resultado = createResponse(row);
+            await moveFile(file,row.dimension, row[campoDef.nombre]);
+            return resultado;
         }
     },
-
 ];

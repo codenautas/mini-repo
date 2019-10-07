@@ -12,10 +12,12 @@
   "dependencies": {
     "@material-ui/core": "~4.5.0",
     "@material-ui/icons": "~4.4.3",
+    "fs-extra": "~8.1.0",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "redux": "^4.0.4",
     "react-redux": "^7.1.1",
+    "yazl": "~2.5.1",
     "ajax-best-promise": "~0.3.7",
     "backend-plus": "~0.31.1",
     "best-globals": "~0.10.23",
@@ -26,6 +28,7 @@
     "require-bro": "~0.1.13"
   },
   "devDependencies": {
+    "@types/fs-extra": "~8.0.0",
     "@types/mocha": "~5.2.7",
     "@types/react": "^16.9.4",
     "@types/react-dom": "^16.9.1",

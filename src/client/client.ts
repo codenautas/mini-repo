@@ -54,7 +54,7 @@ myOwn.clientSides.subirAdjunto = {
     prepare: function(depot:myOwn.Depot, fieldName:string){
         var boton = html.button('Cargar imagen').create();
         depot.rowControls[fieldName].appendChild(boton);
-        boton.addEventListener('click', function(){
+        boton.addEventListener('click', async function(){
             var disableKeysFun = function(){
                 DialogPromise.defaultOpts.disableKeyboads=true;
             }
@@ -66,7 +66,11 @@ myOwn.clientSides.subirAdjunto = {
             botonAceptar.onclick=function(){
                 var img = document.getElementById(imgId) as HTMLImageElement;
                 if(img.src){
-                    //grabar imagen
+                    my.ajax.archivo_subir({
+                        campo:'preview',
+                        indicador:depot.row.indicador,
+                        files:document.getElementById(imgId).losFiles
+                    })
                 }
                 //cerrar dialog
             };
@@ -76,14 +80,19 @@ myOwn.clientSides.subirAdjunto = {
             };
             var mainContainerDiv = html.div({id:'cargar-adjunto-main'},[
                 adjuntoDiv,
+                botonCancelar,
                 botonAceptar,
-                botonCancelar
             ]).create();
             var opts = {
                 buttonsDef:[]
             };
-            confirmPromise(mainContainerDiv,opts).then(disableKeysFun).catch(disableKeysFun);
-            previsualizarImagen(imgId, adjuntoDivId);
+            try{
+                var resultPromise = confirmPromise(mainContainerDiv,opts)
+                previsualizarImagen(imgId, adjuntoDivId);
+                await resultPromise; 
+            }finally{
+                disableKeysFun
+            }
         });
         return boton;  
     }
@@ -97,11 +106,10 @@ myOwn.clientSides.bajarAdjunto = {
     prepare:function(depot:myOwn.Depot, fieldName:string):void{
         let td=depot.rowControls[fieldName];
         let fileName=depot.row.nombre+'.'+depot.row.ext;
-        let bajar = html.a({href:'file?id_adjunto='+depot.row.id_adjunto, download:fileName},"bajar").create();
+        let bajar = html.a({href:'download/file?id_adjunto='+depot.row.id_adjunto, download:fileName},"bajar").create();
         td.appendChild(bajar);
     }
 }
 
 if(window.myStart){
-    alert('my-start')
 }

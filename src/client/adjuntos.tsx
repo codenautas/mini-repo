@@ -4,7 +4,7 @@ import * as ReactDOM from "react-dom";
 const PrevisualizadorImagen = function(props:{canvasId:string, width: number, height:number, autoresize:boolean, src:string|null}){
     const [height, setHeight] = React.useState(props.height);
     const [width, setWidth] = React.useState(props.width);
-    const [src, setSrc] = React.useState(props.src||null);
+    const [src, setSrc] = React.useState(props.src||undefined);
     document.onpaste = function(e){ 
 	    //var ctx = canvas.getContext("2d");
         if (e.clipboardData) {
@@ -28,6 +28,7 @@ const PrevisualizadorImagen = function(props:{canvasId:string, width: number, he
                     };
                     pastedImage.src = source;
 					is_image = true;
+                    document.getElementById(props.canvasId).losFiles = [blob]
 				}
 			}
 			if(is_image == true){
