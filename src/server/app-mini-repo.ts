@@ -68,9 +68,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         })
         super.addLoggedServices();
         this.app.get('/download/file', async function (req, res) {
-            let result = await be.inTransaction(req, (client) => client.query("select ruta from adjuntos where id_adjunto = $1", [req.query.id_adjunto])
-                .fetchUniqueValue());
-            var path = result.value;
+            let path = `local-attachments/${req.query.dimension}/${req.query.name}`;
             MiniTools.serveFile(path, {})(req, res);
         });
         this.app.get('/download/all', async function (req, res, next) {

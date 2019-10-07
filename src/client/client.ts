@@ -52,9 +52,31 @@ myOwn.autoSetupFunctions.push(
 
 myOwn.clientSides.subirAdjunto = {
     prepare: function(depot:myOwn.Depot, fieldName:string){
-        var boton = html.button('Cargar imagen').create();
-        depot.rowControls[fieldName].appendChild(boton);
-        boton.addEventListener('click', async function(){
+        var botonCargarExcel = html.button('excel').create();
+        depot.rowControls[fieldName].appendChild(botonCargarExcel);
+        botonCargarExcel.addEventListener('click', async function(){
+            var showWithMiniMenu = false;
+            var messages = {
+                importDataFromFile: 'Seleccione un archivo',
+                import: 'Cargar'
+            };
+            my.dialogUpload(
+                ['archivo_subir'], 
+                {
+                    campo:'archivo',
+                    indicador:depot.row.indicador,
+                },
+                function(result:any){
+                    depot.rowControls.archivo.setTypedValue(result.nombre);
+                    return result.message;
+                },
+                showWithMiniMenu,
+                messages
+            )    
+        });
+        var botonCargarImagen = html.button('imagen').create();
+        depot.rowControls[fieldName].appendChild(botonCargarImagen);
+        botonCargarImagen.addEventListener('click', async function(){
             var disableKeysFun = function(){
                 DialogPromise.defaultOpts.disableKeyboads=true;
             }
@@ -63,14 +85,15 @@ myOwn.clientSides.subirAdjunto = {
             var imgId = "img-adjunto";
             var adjuntoDiv = html.div({id:adjuntoDivId},[]).create();
             var botonAceptar = html.button({}, 'aceptar').create()
-            botonAceptar.onclick=function(){
+            botonAceptar.onclick=async function(){
                 var img = document.getElementById(imgId) as HTMLImageElement;
                 if(img.src){
-                    my.ajax.archivo_subir({
+                    var result = await my.ajax.archivo_subir({
                         campo:'preview',
                         indicador:depot.row.indicador,
-                        files:document.getElementById(imgId).losFiles
+                        files:img.losFiles
                     })
+                    depot.rowControls.preview.setTypedValue(result.nombre);
                 }
                 //cerrar dialog
             };
@@ -94,20 +117,22 @@ myOwn.clientSides.subirAdjunto = {
                 disableKeysFun
             }
         });
-        return boton;  
     }
 }
 
 myOwn.clientSides.bajarAdjunto = {
     update:function(depot:myOwn.Depot, fieldName:string):void{
         let td=depot.rowControls[fieldName];
-        td.style.visibility=depot.row.fecha?'visible':'hidden';
+        //refresco links cuando se actualizan nombres de archivos
+        td.innerHTML='';
+        let imagenFileName=depot.row.preview;
+        let excelFileName=depot.row.archivo;
+        let bajarImagen = html.a({class:'link-descarga-archivo', href:`download/file?name=${imagenFileName}&dimension=${depot.row.dimension}`, download:imagenFileName},"imagen").create();
+        let bajarExcel = html.a({class:'link-descarga-archivo', href:`download/file?name=${excelFileName}&dimension=${depot.row.dimension}`, download:excelFileName},"excel").create();
+        td.appendChild(bajarExcel);
+        td.appendChild(bajarImagen);
     },
     prepare:function(depot:myOwn.Depot, fieldName:string):void{
-        let td=depot.rowControls[fieldName];
-        let fileName=depot.row.nombre+'.'+depot.row.ext;
-        let bajar = html.a({href:'download/file?id_adjunto='+depot.row.id_adjunto, download:fileName},"bajar").create();
-        td.appendChild(bajar);
     }
 }
 

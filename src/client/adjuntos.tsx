@@ -1,12 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-const PrevisualizadorImagen = function(props:{canvasId:string, width: number, height:number, autoresize:boolean, src:string|null}){
+const PrevisualizadorImagen = function(props:{imgId:string, width: number, height:number, autoresize:boolean, src:string|null}){
     const [height, setHeight] = React.useState(props.height);
     const [width, setWidth] = React.useState(props.width);
     const [src, setSrc] = React.useState(props.src||undefined);
     document.onpaste = function(e){ 
-	    //var ctx = canvas.getContext("2d");
         if (e.clipboardData) {
 			var items = e.clipboardData.items;
 			if (!items) return;
@@ -28,7 +27,7 @@ const PrevisualizadorImagen = function(props:{canvasId:string, width: number, he
                     };
                     pastedImage.src = source;
 					is_image = true;
-                    document.getElementById(props.canvasId).losFiles = [blob]
+                    document.getElementById(props.imgId).losFiles = [blob]
 				}
 			}
 			if(is_image == true){
@@ -38,7 +37,7 @@ const PrevisualizadorImagen = function(props:{canvasId:string, width: number, he
     };
     return (
         <div id="previsualizador-imagen">
-            <img style={{border:"1px solid grey"}} id={props.canvasId} width={width} height={height} src={src}/>
+            <img style={{border:"1px solid grey"}} id={props.imgId} width={width} height={height} src={src}/>
             <div id="image-info">
                 <span>alto: {width}px</span> - <span>ancho: {height}px</span>
             </div>
@@ -46,9 +45,9 @@ const PrevisualizadorImagen = function(props:{canvasId:string, width: number, he
     )
 }
 
-export function previsualizarImagen(canvasId:string, targetElementId:string){
+export function previsualizarImagen(imgId:string, targetElementId:string){
     ReactDOM.render(
-        <PrevisualizadorImagen canvasId= {canvasId} width={300} height={300} autoresize={true} src={null}/>
+        <PrevisualizadorImagen imgId= {imgId} width={300} height={300} autoresize={true} src={null}/>
         , document.getElementById(targetElementId)
     );
 }

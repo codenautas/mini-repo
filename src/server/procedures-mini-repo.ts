@@ -10,6 +10,7 @@ import * as Path from "path";
 import * as bestGlobals from "best-globals";
 import * as likeAr from 'like-ar';
 import { indicadores_textos } from "./table-indicadores_textos";
+import { dimensiones } from "table-dimensiones";
 
 function json(sql:string, orderby:string){
     return `(SELECT jsonb_agg(to_jsonb(j.*) ORDER BY ${orderby}) from (${sql}) as j)`
@@ -132,16 +133,11 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             let ext = Path.extname(file.path).substr(1);
             // let originalFilename = file.originalFilename.slice(0,-(ext.length+1));
             let originalFilename = file.originalFilename;
-            let filename=originalFilename;
+            let filename=`${parameters.indicador}-${originalFilename}`;
             var createResponse = function createResponse(adjuntoRow:any){
                 let resultado = {
-                    message: 'La subida se realizó correctamente (update)',
-                    // nombre: adjuntoRow.nombre,
-                    // nombre_original: adjuntoRow.nombre_original,
-                    // ext: adjuntoRow.ext,
-                    // fecha: adjuntoRow.fecha,
-                    // hora: adjuntoRow.hora,
-                    // id_adjunto: adjuntoRow.id_adjunto
+                    message: `el archivo ${adjuntoRow[campoDef.nombre]} se subió correctamente.`,
+                    nombre: adjuntoRow[campoDef.nombre],
                 }
                 return resultado
             }
