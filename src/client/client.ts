@@ -94,8 +94,8 @@ myOwn.clientSides.subirAdjunto = {
                         files:img.losFiles
                     })
                     depot.rowControls.preview.setTypedValue(result.nombre);
+                    mainContainerDiv.dialogPromiseDone();
                 }
-                mainContainerDiv.dialogPromiseDone();
             };
             var botonCancelar = html.a({class:'danger'}, 'cancelar').create()
             botonCancelar.onclick=function(){
