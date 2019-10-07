@@ -52,6 +52,10 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             return MiniTools.serveText(be.mainPage({useragent}, false, {skipMenu:true}).toHtmlDoc(),'html')(req,res);
         });
         mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
+        this.app.get('/download/file', async function (req, res) {
+            let path = `local-attachments/${req.query.dimension}/${req.query.name}`;
+            MiniTools.serveFile(path, {})(req, res);
+        });
     }
     addLoggedServices(){
         var be=this;
@@ -67,10 +71,6 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             return procedureDef;
         })
         super.addLoggedServices();
-        this.app.get('/download/file', async function (req, res) {
-            let path = `local-attachments/${req.query.dimension}/${req.query.name}`;
-            MiniTools.serveFile(path, {})(req, res);
-        });
         this.app.get('/download/all', async function (req, res, next) {
             // @ts-ignore uso mi user!
             var user = req.user;

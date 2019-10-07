@@ -221,9 +221,7 @@ const SeccionIndicador = (props:{indicador:Indicador})=>{
                 <CampoFicha valor={props.indicador.uso_alc_lim} nombre="uso, alcances y limitaciones"/>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                    Descargar
-                </Button>
+                <Button href={"download/file?name=" + props.indicador.preview +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary">Descargar</Button>
                 <Button onClick={handleClose} color="primary" autoFocus>
                     Cerrar
                 </Button>
