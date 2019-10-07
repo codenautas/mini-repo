@@ -84,7 +84,7 @@ myOwn.clientSides.subirAdjunto = {
             var adjuntoDivId = "cargar-adjunto";
             var imgId = "img-adjunto";
             var adjuntoDiv = html.div({id:adjuntoDivId},[]).create();
-            var botonAceptar = html.button({}, 'aceptar').create()
+            var botonAceptar = html.button({class:'primary-background'}, 'aceptar').create()
             botonAceptar.onclick=async function(){
                 var img = document.getElementById(imgId) as HTMLImageElement;
                 if(img.src){
@@ -97,7 +97,7 @@ myOwn.clientSides.subirAdjunto = {
                 }
                 mainContainerDiv.dialogPromiseDone();
             };
-            var botonCancelar = html.button({}, 'cancelar').create()
+            var botonCancelar = html.a({class:'danger'}, 'cancelar').create()
             botonCancelar.onclick=function(){
                 mainContainerDiv.dialogPromiseDone();
             };
