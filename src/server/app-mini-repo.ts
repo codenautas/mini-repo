@@ -18,14 +18,14 @@ import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParamet
 import serveContent = require("serve-content");
 
 async function recurseDir(root:string, base:string, callback:(path:string, fileName:string)=>Promise<void>){
-    let files = await fs.readdir(base);
+    let files = await fs.readdir(root + base);
     await Promise.all(files.map(async function (fileName:string) {
-        var path = base + '/' + fileName;
+        var path = base + fileName;
         var stat = await fs.stat(root + path);
-        if (stat.isFile) {
+        if (stat.isFile()) {
             await callback(root + path, path);
-        }else if(stat.isDirectory){
-            await recurseDir(root, path, callback);
+        }else if(stat.isDirectory() && fileName!='.' && fileName!='..'){
+            await recurseDir(root, path + '/', callback);
         }
     }));
     
