@@ -10,6 +10,16 @@ import * as DialogPromise from "dialog-promise";
 var datetime=bestGlobals.datetime;
 var changing=bestGlobals.changing;
 
+
+export type ParametrosImagen = {
+    min_height_px_imagen_matriz:number
+    max_height_px_imagen_matriz:number
+    min_width_px_imagen_matriz:number
+    max_width_px_imagen_matriz:number
+    min_aspect_ratio_imagen_matriz:number
+    max_aspect_ratio_imagen_matriz:number
+}
+
 myOwn.wScreens.matriz=async function(addrParams:any){
     var result = await myOwn.ajax.matriz_traer({});
     mostrar(result);
@@ -110,8 +120,9 @@ myOwn.clientSides.subirAdjunto = {
                 buttonsDef:[]
             };
             try{
+                var parametrosImagen: ParametrosImagen = await myOwn.ajax.parametros_imagen_traer({});
                 var resultPromise = confirmPromise(mainContainerDiv,opts)
-                previsualizarImagen(imgId, adjuntoDivId);
+                previsualizarImagen(imgId, adjuntoDivId, parametrosImagen);
                 await resultPromise; 
             }finally{
                 disableKeysFun

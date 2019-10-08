@@ -156,5 +156,18 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             await moveFile(file,row.dimension, row[campoDef.nombre]);
             return resultado;
         }
-    },
+    },{
+        action:'parametros_imagen_traer',
+        parameters:[],
+        coreFunction:async function(context:ProcedureContext,_parameters:CoreFunctionParameters){
+            var result = await context.client.query(`
+                select min_height_px_imagen_matriz, max_height_px_imagen_matriz,
+                       min_width_px_imagen_matriz, max_width_px_imagen_matriz, 
+                       min_aspect_ratio_imagen_matriz, max_aspect_ratio_imagen_matriz 
+                    from parametros
+                    where unico_registro
+            `,[]).fetchUniqueRow();
+            return result.row;
+        }
+    }
 ];
