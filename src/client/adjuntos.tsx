@@ -39,7 +39,7 @@ const PrevisualizadorImagen = function(props:{imgId:string, width: number, heigh
         <div id="previsualizador-imagen">
             <img style={{border:"1px solid grey"}} id={props.imgId} width={width} height={height} src={src}/>
             <div id="image-info">
-                <div style={{color:'#dc3545'}}>{src?'':'Pegar la imágen con Ctrl-C'}</div>
+                <div style={{color:'#dc3545'}}>{src?'':'Pegar la imágen con Ctrl-V'}</div>
                 <span>alto: {width}px</span> - <span>ancho: {height}px</span>
             </div>
         </div>
