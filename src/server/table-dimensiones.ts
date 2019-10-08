@@ -3,17 +3,18 @@
 import {TableDefinition, TableContext} from "./types-mini-repo"
 
 export function dimensiones(context:TableContext):TableDefinition{
-    var admin = context.user.rol==='admin';
+    var admin = context.es.admin;
+    var coordinador = context.es.coordinador;
     return {
         name:'dimensiones',
-        editable: admin,
+        editable: coordinador,
         fields: [
-            {name: 'dimension'              ,typeName:'text'      ,nullable:false},
+            {name: 'dimension'              ,typeName:'text'      ,nullable:false, editable:admin},
             {name: 'denominacion'           ,typeName:'text'      , title:'dimensión', isName:true},
             {name: 'orden'                  ,typeName:'integer'   },
             {name: 'ocultar'                ,typeName:'boolean'   },
             {name: 'icono'                  ,typeName:'text'      },
-            {name: 'color'                  ,typeName:'text'      },
+            {name: 'color'                  ,typeName:'text'      , editable:admin},
         ],
         primaryKey:['dimension'],
         detailTables:[

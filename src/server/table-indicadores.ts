@@ -3,14 +3,14 @@
 import {TableDefinition, TableContext} from "./types-mini-repo"
 
 export function indicadores(context:TableContext):TableDefinition{
-    var puedeEditar = context.es.admin;
+    var {es} = context;
     return {
         name:'indicadores',
-        editable: puedeEditar,
+        editable: es.coordinador,
         fields: [
-            {name:'orden_dimension'                                                  , typeName:'integer' , inTable:false},
-            {name:'dimension'         , title:'dimensión'                            , typeName:'text' },
-            {name:'indicador'         , title:'código indicador'                     , typeName:'text' ,nullable:false},
+            {name:'orden_dimension'                                                  , typeName:'integer' , inTable:false, editable:es.admin},
+            {name:'dimension'         , title:'dimensión'                            , typeName:'text' , editable:es.admin},
+            {name:'indicador'         , title:'código indicador'                     , typeName:'text' , editable:es.admin, nullable:false},
             {name:'abreviacion'       , title:'abr. indicador'                       , typeName:'text' , isName:true},
             {name:'denominacion'      , title:'nombre indicador'                     , typeName:'text' },
             {name:'archivo'           , title:'archivo'            , editable:false  , typeName:'text'},
