@@ -3,6 +3,34 @@ import * as ReactDOM from "react-dom";
 
 import {ParametrosImagen} from "./client";
 
+const VALID = '✓';
+const INVALID = '✗';
+
+const ImagenInfo = function(props:{src:string|undefined, sizeParams:ParametrosImagen, width: number, height:number}){
+    var height = props.height;
+    var width = props.width;
+    var validWidth = width >= props.sizeParams.min_width_px_imagen_matriz && width <= props.sizeParams.max_width_px_imagen_matriz?VALID:INVALID;
+    var validHeight = height >= props.sizeParams.min_height_px_imagen_matriz && height <= props.sizeParams.max_height_px_imagen_matriz?VALID:INVALID;
+    var validAspectRatio = (height/width) >= props.sizeParams.min_aspect_ratio_imagen_matriz && (height/width) <= props.sizeParams.max_aspect_ratio_imagen_matriz?VALID:INVALID;
+    if(props.src){
+        return (
+            <div id="image-info">
+                <div id="image-width-validation">
+                    {validWidth} ancho: {width}px
+                </div>
+                <div id="image-heigth-validation">
+                    {validHeight} alto: {height}px
+                </div>
+                <div id="image-aspect-ratio-validation">
+                    {validAspectRatio} aspect ratio: height/width
+                </div>
+            </div>
+        )
+    }else{
+        return(<></>)
+    }
+}
+
 const PrevisualizadorImagen = function(props:{imgId:string, width: number, height:number, autoresize:boolean, src:string|null, sizeParams:ParametrosImagen}){
     const [height, setHeight] = React.useState(props.height);
     const [width, setWidth] = React.useState(props.width);
@@ -40,19 +68,8 @@ const PrevisualizadorImagen = function(props:{imgId:string, width: number, heigh
     return (
         <div id="previsualizador-imagen">
             <img style={{border:"1px solid grey"}} id={props.imgId} width={width} height={height} src={src}/>
-            <div id="image-info">
-                <div style={{color:'#dc3545'}}>{src?'':'Pegar la imágen con Ctrl-V'}</div>
-                <span>alto: {height}px</span> - <span>ancho: {width}px</span>
-                <div id="image-width-validation">
-                    {width >= props.sizeParams.min_width_px_imagen_matriz && width <= props.sizeParams.max_width_px_imagen_matriz?'ancho valido':'ancho invalido'}
-                </div>
-                <div id="image-heigth-validation">
-                    {height >= props.sizeParams.min_height_px_imagen_matriz && height <= props.sizeParams.max_height_px_imagen_matriz?'alto valido':'alto invalido'}
-                </div>
-                <div id="image-aspect-ratio-validation">
-                    {(height/width) >= props.sizeParams.min_aspect_ratio_imagen_matriz && (height/width) <= props.sizeParams.max_aspect_ratio_imagen_matriz?'aspect ratio valido':'aspect ratio invalido'}
-                </div>
-            </div>
+            <div style={{color:'#dc3545'}}>{src?'':'Pegar la imagen con Ctrl-V'}</div>
+            <ImagenInfo src={src} sizeParams={props.sizeParams} width={width} height={height}/>
         </div>
     )
 }
