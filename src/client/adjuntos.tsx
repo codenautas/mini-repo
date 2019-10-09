@@ -9,25 +9,30 @@ const INVALID = '✗';
 const ImagenInfo = function(props:{src:string|undefined, sizeParams:ParametrosImagen, width: number, height:number}){
     var height = props.height;
     var width = props.width;
-    var validWidth = width >= props.sizeParams.min_width_px_imagen_matriz && width <= props.sizeParams.max_width_px_imagen_matriz?VALID:INVALID;
-    var validHeight = height >= props.sizeParams.min_height_px_imagen_matriz && height <= props.sizeParams.max_height_px_imagen_matriz?VALID:INVALID;
-    var validAspectRatio = (height/width) >= props.sizeParams.min_aspect_ratio_imagen_matriz && (height/width) <= props.sizeParams.max_aspect_ratio_imagen_matriz?VALID:INVALID;
+    var validWidth = width >= props.sizeParams.min_width_px_imagen_matriz && width <= props.sizeParams.max_width_px_imagen_matriz;
+    var validHeight = height >= props.sizeParams.min_height_px_imagen_matriz && height <= props.sizeParams.max_height_px_imagen_matriz;
+    var validAspectRatio = (width/height) >= props.sizeParams.min_aspect_ratio_imagen_matriz && (width/height) <= props.sizeParams.max_aspect_ratio_imagen_matriz;
     if(props.src){
         return (
             <div id="image-info">
                 <div id="image-width-validation">
-                    {validWidth} ancho: {width}px
+                    ancho: {width}px 
+                    <span className={validWidth?'success':'danger'}>{validWidth?VALID:INVALID + ` (el ancho recomendado es de ${props.sizeParams.min_width_px_imagen_matriz} hasta ${props.sizeParams.max_width_px_imagen_matriz} px)`}</span>
                 </div>
                 <div id="image-heigth-validation">
-                    {validHeight} alto: {height}px
+                    alto: {height}px 
+                    <span className={validHeight?'success':'danger'}>{validHeight?VALID:INVALID + ` (la altura recomendada es de ${props.sizeParams.min_height_px_imagen_matriz} hasta ${props.sizeParams.max_height_px_imagen_matriz} px)`}</span> 
                 </div>
                 <div id="image-aspect-ratio-validation">
-                    {validAspectRatio} aspect ratio: height/width
+                    aspect ratio: {Math.round(width/height * 100) / 100} 
+                    <span className={validAspectRatio?'success':'danger'}>{validAspectRatio?VALID:INVALID + ` (el aspect ratio recomendado es de ${props.sizeParams.min_aspect_ratio_imagen_matriz} hasta ${props.sizeParams.max_aspect_ratio_imagen_matriz})`}</span> 
                 </div>
             </div>
         )
     }else{
-        return(<></>)
+        return(
+            <div className='danger'>Pegar la imagen con Ctrl-V</div>
+        )
     }
 }
 
@@ -68,7 +73,6 @@ const PrevisualizadorImagen = function(props:{imgId:string, width: number, heigh
     return (
         <div id="previsualizador-imagen">
             <img style={{border:"1px solid grey"}} id={props.imgId} width={width} height={height} src={src}/>
-            <div style={{color:'#dc3545'}}>{src?'':'Pegar la imagen con Ctrl-V'}</div>
             <ImagenInfo src={src} sizeParams={props.sizeParams} width={width} height={height}/>
         </div>
     )
