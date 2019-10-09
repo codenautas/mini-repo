@@ -52,7 +52,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             return MiniTools.serveText(be.mainPage({useragent}, false, {skipMenu:true}).toHtmlDoc(),'html')(req,res);
         });
         mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
-        this.app.get('/download/file', async function (req, res) {
+        mainApp.get(baseUrl+'/download/file', async function (req, res) {
             let path = `local-attachments/${req.query.dimension}/${req.query.name}`;
             MiniTools.serveFile(path, {})(req, res);
         });
