@@ -1,20 +1,27 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { 
+    // alfabéticamente:
     AppBar, 
+    Box, 
     Button, 
+    Container, 
     CssBaseline, 
     Dialog, 
     DialogActions, 
     DialogContent, 
     DialogContentText, 
     DialogTitle,
+    Fab,
     IconButton, 
     InputBase, 
+    Slide,
     SvgIcon, 
     Toolbar, 
     Typography,
+    Zoom,
     useMediaQuery, 
+    useScrollTrigger,
     useTheme
 } from "@material-ui/core";
 
@@ -43,10 +50,11 @@ type Dimension = {
 }
 
 import { 
+    // alfabéticamente:
+    Theme, 
     createStyles, 
     fade, 
-    Theme, 
-    makeStyles 
+    makeStyles,
 } from '@material-ui/core/styles';
 
 
@@ -57,6 +65,7 @@ export const materialIoIconsSvgPath:{[k:string]:string}={
     EmojiObjects: "M12 3c-.46 0-.93.04-1.4.14-2.76.53-4.96 2.76-5.48 5.52-.48 2.61.48 5.01 2.22 6.56.43.38.66.91.66 1.47V19c0 1.1.9 2 2 2h.28c.35.6.98 1 1.72 1s1.38-.4 1.72-1H14c1.1 0 2-.9 2-2v-2.31c0-.55.22-1.09.64-1.46C18.09 13.95 19 12.08 19 10c0-3.87-3.13-7-7-7zm2 16h-4v-1h4v1zm0-2h-4v-1h4v1zm-1.5-5.59V14h-1v-2.59L9.67 9.59l.71-.71L12 10.5l1.62-1.62.71.71-1.83 1.82z",
     Label:"M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z",
     LocalAtm: "M11 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1h-3v-1h4V8h-2V7h-2v1h-1c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3v1H9v2h2v1zm9-13H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z",
+    KeyboardArrowUp: "M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z",
     Menu:"M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
     SearchIcon:"M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
 }
@@ -71,11 +80,16 @@ const SearchIcon = () =>
         <path d={materialIoIconsSvgPath.SearchIcon} />
     </SvgIcon>
 
-const useStyles = makeStyles((theme: Theme) =>
+const KeyboardArrowUpIcon = () =>
+    <SvgIcon>
+        <path d={materialIoIconsSvgPath.KeyboardArrowUp} />
+    </SvgIcon>
+
+const useStylesSearchAppBar = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-    },
+    // root: {
+    //   flexGrow: 1,
+    // },
     menuButton: {
       marginRight: theme.spacing(2),
     },
@@ -126,39 +140,55 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function SearchAppBar() {
-  const classes = useStyles();
+function HideOnScroll(props: Props) {
+  const { children } = props;
+  // Note that you normally won't need to set the window ref as useScrollTrigger
+  // will default to window.
+  // This is only being set here because the demo is in an iframe.
+  const trigger = useScrollTrigger();
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Banco de Datos
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Buscar..."
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
+function SearchAppBar() {
+  const classes = useStylesSearchAppBar();
+  return (
+    <>
+        <HideOnScroll>
+              <AppBar>
+                <Toolbar>
+                  <IconButton
+                    edge="start"
+                    className={classes.menuButton}
+                    color="inherit"
+                    aria-label="open drawer"
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Typography className={classes.title} variant="h6" noWrap>
+                    Banco de Datos
+                  </Typography>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Buscar..."
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ 'aria-label': 'search' }}
+                    />
+                  </div>
+                </Toolbar>
+              </AppBar>
+        </HideOnScroll>
+        <Toolbar id="tope"/>
+    </>
   );
 }
 
@@ -229,8 +259,8 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
                 <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
                 <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
                 <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
-                <CampoFicha valor={props.indicador.desagregaciones} nombre="desagregaciones"/>
-                <CampoFicha valor={props.indicador.uso_alc_lim} nombre="uso, alcances y limitaciones"/>
+                <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
+                <CampoFicha valor={props.indicador.uso_alc_lim} nombre="Uso, alcances y limitaciones"/>
             </DialogContent>
             <DialogActions>
                 <Button href={"./download/file?name=" + props.indicador.archivo +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary">Descargar</Button>
@@ -289,6 +319,46 @@ const ListaIndicadores = (props:{dimensiones:Dimension[]}) => (
     </div>
 )
 
+const useStylesScrollTop = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+  }),
+);
+
+function ScrollTop(props: any) {
+  const { children} = props;
+  const classes = useStylesScrollTop();
+  // Note that you normally won't need to set the window ref as useScrollTrigger
+  // will default to window.
+  // This is only being set here because the demo is in an iframe.
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+      // window.scrollTo(0,0)
+    const anchor = document.querySelector(
+        '#tope',
+    );
+    if (anchor) {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  return (
+    <Zoom in={trigger}>
+      <div onClick={handleClick} role="presentation" className={classes.root}>
+        {children}
+      </div>
+    </Zoom>
+  );
+}
+
 export function mostrar(result:{dimensiones:Dimension[]}){
     ReactDOM.render(
         <React.StrictMode>
@@ -297,6 +367,11 @@ export function mostrar(result:{dimensiones:Dimension[]}){
                 <SearchAppBar/>
                 <ListaIndicadores dimensiones={result.dimensiones}/>
             </div>
+            <ScrollTop>
+                <Fab color="secondary" size="small" aria-label="scroll back to top">
+                    <KeyboardArrowUpIcon />
+                </Fab>
+            </ScrollTop>
         </React.StrictMode>
         , document.getElementById("main_layout")
     );
