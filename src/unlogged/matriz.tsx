@@ -1,7 +1,16 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
-import { useMediaQuery, useTheme} from "@material-ui/core";
+import { 
+    Button, 
+    CssBaseline, 
+    Dialog, 
+    DialogActions, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle,
+    useMediaQuery, 
+    useTheme
+} from "@material-ui/core";
 
 type Indicador = {
     indicador:string,
@@ -27,9 +36,21 @@ type Dimension = {
     indicadores:Indicador[]
 }
 
-import { AppBar, Toolbar, IconButton, Typography, InputBase, SvgIcon, makeStyles } from '@material-ui/core';
-// import { createStyles, fade, Theme, makeStyles } from '@material-ui/core/styles';
-// const { createStyles, fade, Theme } = styled;
+import { 
+    AppBar, 
+    IconButton, 
+    InputBase, 
+    SvgIcon, 
+    Toolbar, 
+    Typography
+} from '@material-ui/core';
+
+import { 
+    createStyles, 
+    fade, 
+    Theme, 
+    makeStyles 
+} from '@material-ui/core/styles';
 
 
 // https://material-ui.com/components/material-icons/
@@ -43,11 +64,6 @@ export const materialIoIconsSvgPath:{[k:string]:string}={
     SearchIcon:""
 }
 
-// FROM: .../node_modules/@material-ui/core/umd/material-ui.development.js
-function fade(color, value) {
-    return color
-}
-
 const MenuIcon = () =>
     <SvgIcon>
         <path d={materialIoIconsSvgPath.Menu} />
@@ -58,8 +74,8 @@ const SearchIcon = () =>
         <path d={materialIoIconsSvgPath.SearchIcon} />
     </SvgIcon>
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
     root: {
       flexGrow: 1,
     },
@@ -113,9 +129,8 @@ const useStyles = makeStyles(theme => ({
   }),
 );
 
-export default function SearchAppBar() {
+function SearchAppBar() {
   const classes = useStyles();
-
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -129,14 +144,14 @@ export default function SearchAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
+            Banco de Datos
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
             <InputBase
-              placeholder="Search…"
+              placeholder="Buscar..."
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
@@ -279,9 +294,13 @@ const ListaIndicadores = (props:{dimensiones:Dimension[]}) => (
 
 export function mostrar(result:{dimensiones:Dimension[]}){
     ReactDOM.render(
-        <div className="matriz-comparacion">
-            <ListaIndicadores dimensiones={result.dimensiones}/>
-        </div>
+        <React.StrictMode>
+            <CssBaseline />
+            <div className="matriz-comparacion">
+                <SearchAppBar/>
+                <ListaIndicadores dimensiones={result.dimensiones}/>
+            </div>
+        </React.StrictMode>
         , document.getElementById("main_layout")
     );
 }

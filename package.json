@@ -23,6 +23,7 @@
     "best-globals": "~0.10.23",
     "js-to-html": "~1.0.11",
     "like-ar": "~0.2.16",
+    "material-styles": "~0.0.3",
     "mini-tools": "~1.0.9",
     "pg-promise-strict": "~1.0.11",
     "require-bro": "~0.1.13"
