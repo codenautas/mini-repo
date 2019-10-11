@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { 
+    AppBar, 
     Button, 
     CssBaseline, 
     Dialog, 
@@ -8,6 +9,11 @@ import {
     DialogContent, 
     DialogContentText, 
     DialogTitle,
+    IconButton, 
+    InputBase, 
+    SvgIcon, 
+    Toolbar, 
+    Typography,
     useMediaQuery, 
     useTheme
 } from "@material-ui/core";
@@ -37,15 +43,6 @@ type Dimension = {
 }
 
 import { 
-    AppBar, 
-    IconButton, 
-    InputBase, 
-    SvgIcon, 
-    Toolbar, 
-    Typography
-} from '@material-ui/core';
-
-import { 
     createStyles, 
     fade, 
     Theme, 
@@ -61,7 +58,7 @@ export const materialIoIconsSvgPath:{[k:string]:string}={
     Label:"M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z",
     LocalAtm: "M11 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1h-3v-1h4V8h-2V7h-2v1h-1c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3v1H9v2h2v1zm9-13H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z",
     Menu:"M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
-    SearchIcon:""
+    SearchIcon:"M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
 }
 
 const MenuIcon = () =>
