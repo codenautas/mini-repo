@@ -69,6 +69,5 @@ client-setup:
   menu: true
   initial-scale: 1.0
   user-scalable: no
-  deviceWidthForMobile: 768px
   x-grid-buffer: wsql
 `
