@@ -13,11 +13,16 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Divider,
     Fab,
     IconButton,
     InputBase,
+    List,
+    ListItem,
+    ListItemText,
     Slide,
     SvgIcon,
+    SwipeableDrawer,
     Toolbar,
     Typography,
     Zoom,
@@ -155,11 +160,29 @@ function HideOnScroll(props: { children: JSX.Element }) {
     );
 }
 
-function SearchAppBar(props: { onSearch: (value: string) => void }) {
-    var [value, setValue] = useState();
+const handleScroll = (id:string) => (event: React.MouseEvent<HTMLDivElement>) => {
+    // window.scrollTo(0,0)
+    const anchor = document.getElementById(id);
+    if (anchor) {
+        window.scroll({behavior:'smooth', top:anchor.offsetTop-window.pizarron.offsetTop, left:0})
+        // document.body.scroll({behavior:'smooth', top:anchor.offsetTop-window.pizarron.offsetTop})
+        // anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
+function SearchAppBar(props: { dimensiones:Dimension[], onSearch: (value: string) => void }) {
+    var [search, setSearch] = useState();
+    var [menuAbierto, setMenuAbierto] = useState(false);
+    var [irA, setIrA] = useState<string|null>(null);
+    React.useEffect(()=>{
+        if(irA){
+            handleScroll("dimension-"+irA)(null);
+            setIrA(null)
+        }
+    },[irA])
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        setValue(value);
+        setSearch(value);
         props.onSearch(value);
     };
     const classes = useStylesSearchAppBar();
@@ -173,6 +196,7 @@ function SearchAppBar(props: { onSearch: (value: string) => void }) {
                             className={classes.menuButton}
                             color="inherit"
                             aria-label="open drawer"
+                            onClick={()=>setMenuAbierto(true)}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -184,7 +208,7 @@ function SearchAppBar(props: { onSearch: (value: string) => void }) {
                                 <SearchIcon />
                             </div>
                             <InputBase
-                                value={value}
+                                value={search}
                                 placeholder="Buscar..."
                                 classes={{
                                     root: classes.inputRoot,
@@ -198,6 +222,30 @@ function SearchAppBar(props: { onSearch: (value: string) => void }) {
                 </AppBar>
             </HideOnScroll>
             <Toolbar id="tope" />
+            <SwipeableDrawer
+                open={menuAbierto}
+                onClose={()=>setMenuAbierto(false)}
+                onOpen={()=>setMenuAbierto(true)}
+            >
+                <div
+                    x-className={classes.list}
+                    role="presentation"
+                    onClick={()=>setMenuAbierto(false)}
+                    onKeyDown={()=>setMenuAbierto(false)}
+                >
+                    <List>
+                        {props.dimensiones.map(({dimension, denominacion}:Dimension) => (
+                            <ListItem button key={dimension}>
+                                <ListItemText primary={denominacion} onClick={()=>{
+                                    setMenuAbierto(false);
+                                    setIrA(dimension);
+                                }}/>
+                            </ListItem>
+                        ))}
+                    </List>
+                    <Divider />
+                </div>
+            </SwipeableDrawer>            
         </>
     );
 }
@@ -292,7 +340,7 @@ const TituloDimension = (props:{dimension:Dimension})=>(
 
 const SeccionDimension = (props:{dimension:Dimension})=>(
     <>
-        <div className="caja-dimension" id-dimension={props.dimension.dimension} mis-columnas="2"
+        <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension} mis-columnas="2"
             style={{
                 backgroundColor:props.dimension.color,
                 gridRow:'span '+(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)
@@ -349,20 +397,9 @@ function ScrollTop(props: any) {
         disableHysteresis: true,
         threshold: 100,
     });
-
-    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        // window.scrollTo(0,0)
-        const anchor = document.querySelector(
-            '#tope',
-        );
-        if (anchor) {
-            anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
-
     return (
         <Zoom in={trigger}>
-            <div onClick={handleClick} role="presentation" className={classes.root}>
+            <div onClick={handleScroll('tope')} role="presentation" className={classes.root}>
                 {children}
             </div>
         </Zoom>
@@ -384,7 +421,7 @@ function AppMiniRepo(props:{dimensiones:Dimension[]}){
     return <React.StrictMode>
         <CssBaseline />
         <div className="matriz-comparacion">
-            <SearchAppBar onSearch={searchChange}/>
+            <SearchAppBar dimensiones={props.dimensiones} onSearch={searchChange}/>
             <ListaIndicadores dimensiones={filteredResult}/>
         </div>
         <ScrollTop>
