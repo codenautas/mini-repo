@@ -64,6 +64,7 @@ login:
     inactiveFail: es usuario está marcado como inactivo
 client-setup:
   title: mini-repo
+  deviceWidthForMobile: device-width
   cursors: true
   lang: es
   menu: true

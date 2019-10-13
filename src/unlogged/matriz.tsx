@@ -1,26 +1,27 @@
 import * as React from "react";
+const {useState} = React;
 import * as ReactDOM from "react-dom";
-import { 
+import {
     // alfabéticamente:
-    AppBar, 
-    Box, 
-    Button, 
-    Container, 
-    CssBaseline, 
-    Dialog, 
-    DialogActions, 
-    DialogContent, 
-    DialogContentText, 
+    AppBar,
+    Box,
+    Button,
+    Container,
+    CssBaseline,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
     DialogTitle,
     Fab,
-    IconButton, 
-    InputBase, 
+    IconButton,
+    InputBase,
     Slide,
-    SvgIcon, 
-    Toolbar, 
+    SvgIcon,
+    Toolbar,
     Typography,
     Zoom,
-    useMediaQuery, 
+    useMediaQuery,
     useScrollTrigger,
     useTheme
 } from "@material-ui/core";
@@ -39,7 +40,8 @@ type Indicador = {
     def_ope:string
     cob:string
     desagregaciones:string
-    uso_alc_lim:string
+    uso_alc_lim:string,
+    palabras:string[]
 }
 
 type Dimension = {
@@ -49,11 +51,11 @@ type Dimension = {
     indicadores:Indicador[]
 }
 
-import { 
+import {
     // alfabéticamente:
-    Theme, 
-    createStyles, 
-    fade, 
+    Theme,
+    createStyles,
+    fade,
     makeStyles,
 } from '@material-ui/core/styles';
 
@@ -86,110 +88,118 @@ const KeyboardArrowUpIcon = () =>
     </SvgIcon>
 
 const useStylesSearchAppBar = makeStyles((theme: Theme) =>
-  createStyles({
-    // root: {
-    //   flexGrow: 1,
-    // },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      flexGrow: 1,
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
-    },
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-      marginLeft: 0,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
-        width: 'auto',
-      },
-    },
-    searchIcon: {
-      width: theme.spacing(7),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    inputRoot: {
-      color: 'inherit',
-    },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 7),
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: 120,
-        '&:focus': {
-          width: 200,
+    createStyles({
+        // root: {
+        //   flexGrow: 1,
+        // },
+        menuButton: {
+            marginRight: theme.spacing(2),
         },
-      },
-    },
-  }),
+        title: {
+            flexGrow: 1,
+            display: 'none',
+            [theme.breakpoints.up('sm')]: {
+                display: 'block',
+            },
+        },
+        search: {
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: fade(theme.palette.common.white, 0.15),
+            '&:hover': {
+                backgroundColor: fade(theme.palette.common.white, 0.25),
+            },
+            marginLeft: 0,
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                marginLeft: theme.spacing(1),
+                width: 'auto',
+            },
+        },
+        searchIcon: {
+            width: theme.spacing(7),
+            height: '100%',
+            position: 'absolute',
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        inputRoot: {
+            color: 'inherit',
+        },
+        inputInput: {
+            padding: theme.spacing(1, 1, 1, 7),
+            transition: theme.transitions.create('width'),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                width: 120,
+                '&:focus': {
+                    width: 200,
+                },
+            },
+        },
+    }),
 );
 
-function HideOnScroll(props: Props) {
-  const { children } = props;
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger();
-  return (
-    <Slide appear={false} direction="down" in={!trigger}>
-      {children}
-    </Slide>
-  );
+function HideOnScroll(props: { children: JSX.Element }) {
+    const { children } = props;
+    // Note that you normally won't need to set the window ref as useScrollTrigger
+    // will default to window.
+    // This is only being set here because the demo is in an iframe.
+    const trigger = useScrollTrigger();
+    return (
+        <Slide appear={false} direction="down" in={!trigger}>
+            {children}
+        </Slide>
+    );
 }
 
-function SearchAppBar() {
-  const classes = useStylesSearchAppBar();
-  return (
-    <>
-        <HideOnScroll>
-              <AppBar>
-                <Toolbar>
-                  <IconButton
-                    edge="start"
-                    className={classes.menuButton}
-                    color="inherit"
-                    aria-label="open drawer"
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                  <Typography className={classes.title} variant="h6" noWrap>
-                    Banco de Datos
-                  </Typography>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
-                    </div>
-                    <InputBase
-                      placeholder="Buscar..."
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                      inputProps={{ 'aria-label': 'search' }}
-                    />
-                  </div>
-                </Toolbar>
-              </AppBar>
-        </HideOnScroll>
-        <Toolbar id="tope"/>
-    </>
-  );
+function SearchAppBar(props: { onSearch: (value: string) => void }) {
+    var [value, setValue] = useState();
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setValue(value);
+        props.onSearch(value);
+    };
+    const classes = useStylesSearchAppBar();
+    return (
+        <>
+            <HideOnScroll>
+                <AppBar>
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="open drawer"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography className={classes.title} variant="h6" noWrap>
+                            Banco de Datos
+                        </Typography>
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                value={value}
+                                placeholder="Buscar..."
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </Toolbar>
+                </AppBar>
+            </HideOnScroll>
+            <Toolbar id="tope" />
+        </>
+    );
 }
 
 const TituloIndicador = (props:{indicador:Indicador})=>(
@@ -207,9 +217,9 @@ const CampoFicha = (props:{valor:string, nombre:string}) =>
 const ImagenPreview = (props:{indicador:Indicador}) => {
     const [fullWidth, setFullWidth] = React.useState(false);
     return <>{props.indicador.preview?
-        <img 
-            className="img-preview" 
-            full-width={fullWidth?"full":"normal"} 
+        <img
+            className="img-preview"
+            full-width={fullWidth?"full":"normal"}
             src={`./storage/${props.indicador.dimension}/${props.indicador.preview}`}
             onClick={()=>setFullWidth(!fullWidth)}
         />
@@ -236,13 +246,13 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
             </div>
         </div>
         <Dialog
-          className="fila-indicador"
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          fullScreen={fullScreen}
-          maxWidth="lg"
+            className="fila-indicador"
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            fullScreen={fullScreen}
+            maxWidth="lg"
         >
             <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
             <DialogContent>
@@ -286,7 +296,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>(
             style={{
                 backgroundColor:props.dimension.color,
                 gridRow:'span '+(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)
-            }} 
+            }}
         >
             <TituloDimension dimension={props.dimension} />
             <div className="caja-int-dimension">
@@ -299,7 +309,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>(
             style={{
                 backgroundColor:props.dimension.color,
                 gridRow:'span '+(Math.floor((props.dimension.indicadores.length+3-1)/3)*2+1)
-            }} 
+            }}
         >
             <TituloDimension dimension={props.dimension} />
             <div className="caja-int-dimension">
@@ -320,59 +330,74 @@ const ListaIndicadores = (props:{dimensiones:Dimension[]}) => (
 )
 
 const useStylesScrollTop = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      position: 'fixed',
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-  }),
+    createStyles({
+        root: {
+            position: 'fixed',
+            bottom: theme.spacing(2),
+            right: theme.spacing(2),
+        },
+    }),
 );
 
 function ScrollTop(props: any) {
-  const { children} = props;
-  const classes = useStylesScrollTop();
-  // Note that you normally won't need to set the window ref as useScrollTrigger
-  // will default to window.
-  // This is only being set here because the demo is in an iframe.
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 100,
-  });
+    const { children } = props;
+    const classes = useStylesScrollTop();
+    // Note that you normally won't need to set the window ref as useScrollTrigger
+    // will default to window.
+    // This is only being set here because the demo is in an iframe.
+    const trigger = useScrollTrigger({
+        disableHysteresis: true,
+        threshold: 100,
+    });
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-      // window.scrollTo(0,0)
-    const anchor = document.querySelector(
-        '#tope',
+    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        // window.scrollTo(0,0)
+        const anchor = document.querySelector(
+            '#tope',
+        );
+        if (anchor) {
+            anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    return (
+        <Zoom in={trigger}>
+            <div onClick={handleClick} role="presentation" className={classes.root}>
+                {children}
+            </div>
+        </Zoom>
     );
-    if (anchor) {
-        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+}
 
-  return (
-    <Zoom in={trigger}>
-      <div onClick={handleClick} role="presentation" className={classes.root}>
-        {children}
-      </div>
-    </Zoom>
-  );
+function AppMiniRepo(props:{dimensiones:Dimension[]}){
+    const [search, setSearch] = useState<string|null>(null);
+    const searchChange = setSearch;
+    const filteredResult = props.dimensiones.map(dimension=>
+        search!=null?{...dimension, indicadores:dimension.indicadores.filter(indicador=>
+            search.split(' ').map(p=>p.toLocaleLowerCase()).every(palabraBuscada=>
+                indicador.palabras.map(p=>p.toLocaleLowerCase()).filter(palabra=>palabra.includes(palabraBuscada)).length
+            )
+        )}:dimension
+    ).filter(dimension=>
+        dimension.indicadores.length
+    )
+    return <React.StrictMode>
+        <CssBaseline />
+        <div className="matriz-comparacion">
+            <SearchAppBar onSearch={searchChange}/>
+            <ListaIndicadores dimensiones={filteredResult}/>
+        </div>
+        <ScrollTop>
+            <Fab color="secondary" size="small" aria-label="scroll back to top">
+                <KeyboardArrowUpIcon />
+            </Fab>
+        </ScrollTop>
+    </React.StrictMode>
 }
 
 export function mostrar(result:{dimensiones:Dimension[]}){
     ReactDOM.render(
-        <React.StrictMode>
-            <CssBaseline />
-            <div className="matriz-comparacion">
-                <SearchAppBar/>
-                <ListaIndicadores dimensiones={result.dimensiones}/>
-            </div>
-            <ScrollTop>
-                <Fab color="secondary" size="small" aria-label="scroll back to top">
-                    <KeyboardArrowUpIcon />
-                </Fab>
-            </ScrollTop>
-        </React.StrictMode>
+        <AppMiniRepo dimensiones={result.dimensiones}/>
         , document.getElementById("main_layout")
     );
 }
