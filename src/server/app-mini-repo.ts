@@ -16,6 +16,7 @@ import {parametros} from "./table-parametros";
 
 import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParameters } from "backend-plus";
 import serveContent = require("serve-content");
+import { catchClause } from "babel-types";
 
 async function recurseDir(root:string, base:string, callback:(path:string, fileName:string)=>Promise<void>){
     let files = await fs.readdir(root + base);
@@ -40,16 +41,24 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         var messages = this.messages = this.messages || {};
         this.messages = messages = changing(messages, {
             fileUploaded: 'archivo subido',
-
         })
     }
     addSchrödingerServices(mainApp:backendPlus.Express, baseUrl:string){
         var be=this;
         super.addSchrödingerServices(mainApp, baseUrl);
-        mainApp.get(baseUrl+'/vi',function(req,res,_next){
+        mainApp.get(baseUrl+'/vi',async function(req,res,_next){
             // @ts-ignore sé que voy a recibir useragent por los middlewares de Backend-plus
             var {useragent} = req;
-            return MiniTools.serveText(be.mainPage({useragent}, false, {skipMenu:true}).toHtmlDoc(),'html')(req,res);
+            var htmlMain=be.mainPage({useragent}, false, {skipMenu:true}).toHtmlDoc();
+            try{
+                var foot = await fs.readFile('./local-attachments/foot.html','utf8');
+                htmlMain=htmlMain.replace(/<\/body>/,foot+"$&");
+            }catch(err){
+                if(err.code!=='ENOENT'){
+                    throw err;
+                }
+            }
+            MiniTools.serveText(htmlMain,'html')(req,res);
         });
         mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
         mainApp.get(baseUrl+'/download/file', async function (req, res) {
@@ -66,7 +75,6 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
                     var result = await originalCoreFunction.call(be,context,parameters)
                     return result;
                 }
-
             }
             return procedureDef;
         })
