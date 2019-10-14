@@ -15,5 +15,5 @@ window.addEventListener('load', async function(){
     layout.innerHTML+='<div>_</div>';
     var result = await myOwn.ajax.matriz_traer({});
     layout.innerHTML='<div id=main_layout></div>'
-    mostrar(result);
+    mostrar(result, true);
 })
