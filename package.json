@@ -1,7 +1,7 @@
 {
   "name": "mini-repo",
   "description": "Mini repositorio",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "main": "dist/server/app-mini-repo.js",
   "types": "dist/server/app-mini-repo.d.ts",

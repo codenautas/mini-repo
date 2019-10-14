@@ -3,6 +3,7 @@ const {useState} = React;
 import * as ReactDOM from "react-dom";
 
 import * as likeAr from "like-ar";
+import {compareForOrder} from "best-globals";
 
 import {
     // alfabéticamente:
@@ -173,20 +174,35 @@ const handleScroll = (id:string) => () => {
     // window.scrollTo(0,0)
     const anchor = document.getElementById(id);
     if (anchor) {
-        window.scroll({behavior:'smooth', top:anchor.offsetTop-window.pizarron.offsetTop, left:0})
-        // document.body.scroll({behavior:'smooth', top:anchor.offsetTop-window.pizarron.offsetTop})
-        // anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // @ts-ignore   pizarron existe como id global
+        var contenedor:HtmlDivElement=window.pizarron;
+        window.scroll({behavior:'smooth', top:anchor.offsetTop-contenedor.offsetTop, left:0})
     }
 };
+
+function ListItemWithSubList(props:{ primary:string, secondary?:string, open:boolean, onToggle:(open:boolean)=>void, children:JSX.Element[] }){
+    return <>
+        <ListItem button onClick={()=>props.onToggle(!props.open)}>
+            <ListItemText primary={props.primary} secondary={props.secondary} />
+            {props.open ? <ICON.ExpandLess /> : <ICON.ExpandMore />}
+        </ListItem>    
+        <Collapse in={props.open} timeout="auto" unmountOnExit>
+            <List>
+                {props.children}
+            </List>
+        </Collapse>
+    </>
+}
 
 function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlogged:boolean, onSearch: (value: string) => void}) {
     var search = props.search;
     var [menuAbierto, setMenuAbierto] = useState(false);
     var [irA, setIrA] = useState<string|null>(null);
     var [menuDimensiones, setMenuDimensiones] = useState(true);
+    var [menuIndicadores, setMenuIndicadores] = useState(false);
     React.useEffect(()=>{
         if(irA){
-            handleScroll("dimension-"+irA)();
+            handleScroll(irA)();
             setIrA(null)
         }
     },[irA])
@@ -208,6 +224,8 @@ function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlo
         }),
     );
     const classesMenu = useStylesMenu();
+    var indicadoresOrdenados = ([] as Indicador[]).concat(...props.dimensiones.map(({indicadores}:Dimension) => indicadores));
+    indicadoresOrdenados.sort(compareForOrder([{column:'denominacion', order:1}]))
     return (
         <>
             <HideOnScroll active={props.unlogged}>
@@ -251,27 +269,30 @@ function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlo
                 onOpen={()=>setMenuAbierto(true)}
             >
                 <div
-                    x-className={classes.list}
+                    x-className="{classes.list}"
                     role="presentation"
-                    onClick={()=>setMenuAbierto(false)}
-                    onKeyDown={()=>setMenuAbierto(false)}
                 >
-                    <ListItem button onClick={()=>setMenuDimensiones(!menuDimensiones)}>
-                        <ListItemText primary="Dimensiones" />
-                        {open ? <ICON.ExpandLess /> : <ICON.ExpandMore />}
-                    </ListItem>    
-                    <Collapse in={menuDimensiones} timeout="auto" unmountOnExit>
-                        <List>
-                            {props.dimensiones.map(({dimension, denominacion}:Dimension) => (
-                                <ListItem className={classesMenu.nested} button key={dimension}>
-                                    <ListItemText primary={denominacion} onClick={()=>{
-                                        setMenuAbierto(false);
-                                        setIrA(dimension);
-                                    }}/>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Collapse>
+                    <ListItemWithSubList primary="Dimensiones" open={menuDimensiones} onToggle={setMenuDimensiones}>
+                        {props.dimensiones.map(({dimension, denominacion}:Dimension) => (
+                            <ListItem className={classesMenu.nested} button key={dimension}>
+                                <ListItemText primary={denominacion} onClick={()=>{
+                                    setMenuAbierto(false);
+                                    setIrA("dimension-"+dimension);
+                                }}/>
+                            </ListItem>
+                        ))}
+                    </ListItemWithSubList>
+                    <Divider />
+                    <ListItemWithSubList primary="Indicadores" secondary="en orden alfabético" open={menuIndicadores} onToggle={setMenuIndicadores}>
+                        {indicadoresOrdenados.map(({indicador, denominacion}:Indicador) => (
+                            <ListItem className={classesMenu.nested} button key={denominacion}>
+                                <ListItemText primary={denominacion} onClick={()=>{
+                                    setMenuAbierto(false);
+                                    setIrA("indicador-"+denominacion);
+                                }}/>
+                            </ListItem>
+                        ))}
+                    </ListItemWithSubList>
                     <Divider />
                 </div>
             </SwipeableDrawer>            
@@ -314,7 +335,7 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
         setOpen(false);
     };
     return <>
-        <div className="caja-indicador-contenedor">
+        <div className="caja-indicador-contenedor" id={"indicador-"+props.indicador.denominacion}>
             <div className="caja-indicador" title={props.indicador.denominacion}
                 style={{backgroundImage:props.indicador.preview?`url("./storage/${props.indicador.dimension}/${props.indicador.preview}")`:''}}
                 onClick={handleClickOpen}
@@ -487,6 +508,7 @@ function AppMiniRepo(props:{dimensiones:Dimension[], unlogged:boolean}){
                     message={<span id="client-snackbar">
                         <InfoIcon/> 
                         <span id="message-id">{['innerWidth','outerWidth','innerHeight','outerHeight'].map(attr=>
+                            // @ts-ignore:  Este es un mensaje de debug
                             <span> <b> {attr}: </b> {window[attr]} </span> 
                         )}</span>
                     </span>}
