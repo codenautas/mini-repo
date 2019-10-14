@@ -39,6 +39,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         super(args); 
         // @ts-ignore los mensajes existen en backend-plus!
         var messages = this.messages = this.messages || {};
+        // @ts-ignore los mensajes existen en backend-plus!
         this.messages = messages = changing(messages, {
             fileUploaded: 'archivo subido',
         })
@@ -102,6 +103,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         super.configStaticConfig();
         this.setStaticConfig(defConfig);
     }
+    // @ts-ignore el ts manifiesta incompatibilidad en el campo type
     clientIncludes(req:Request, opts:any){
         var loggedResources=req && opts && !opts.skipMenu ? [
             {type:'js' , src:'client.js' },

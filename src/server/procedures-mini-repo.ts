@@ -49,60 +49,68 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             var sql=`
                 SELECT *
                     FROM indicadores
+                    where archivo<>''
             `;
             var indicadores = await context.client.query(sql).fetchAll();
             var indicadoresTextosTableDef = context.be.tableDefAdapt(indicadores_textos(context),context);
             var tipo = 'excel';
+            var errores = 0;
             for (let indicador of indicadores.rows){
-                var content = await fs.readFile(`local-attachments/${indicador.dimension}/${indicador.archivo}`)
                 context.informProgress({message:`leyendo archivo ${indicador.archivo}`});
-                var wb = XLSX.read(content);
-                for(let sheet of wb.SheetNames){
-                    var ws = wb.Sheets[sheet];
-                    if(ws['!ref']){
-                        var range = XLSX.utils.decode_range(ws['!ref']);
-                        for(var iColumn=0; iColumn<=range.e.c; iColumn++){
-                            for(var iRow=0; iRow<=range.e.r; iRow++){
-                                var cellAddress=XLSX.utils.encode_cell({r:iRow, c:iColumn});
-                                var cellOfFieldName=ws[cellAddress];
-                                if(cellOfFieldName && cellOfFieldName.v){
-                                    var value = cellOfFieldName.v.toString().trim();
-                                    if(value){
-                                        var newRow:{
-                                            indicador: string,
-                                            tipo: string,
-                                            tab: string,
-                                            celda: string,
-                                            dato: string
-                                        } = {
-                                            indicador: indicador.indicador,
-                                            tipo: tipo,
-                                            tab: sheet,
-                                            celda: cellAddress,
-                                            dato: value
-                                        }
-                                        var primaryKeyValues = indicadoresTextosTableDef.primaryKey.map(function(pkField){
-                                            return newRow[pkField];
-                                        });
-                                        await context.be.procedure.table_record_save.coreFunction(
-                                            context,{
-                                                table: indicadoresTextosTableDef.tableName, 
-                                                primaryKeyValues,
-                                                newRow,
-                                                oldRow:[],
-                                                status:'update',
-                                                insertIfNotUpdate:true,
-                                                masive:true
+                try{
+                    var content = await fs.readFile(`local-attachments/${indicador.dimension}/${indicador.archivo}`)
+                    var wb = XLSX.read(content);
+                    for(let sheet of wb.SheetNames){
+                        var ws = wb.Sheets[sheet];
+                        if(ws['!ref']){
+                            var range = XLSX.utils.decode_range(ws['!ref']);
+                            for(var iColumn=0; iColumn<=range.e.c; iColumn++){
+                                for(var iRow=0; iRow<=range.e.r; iRow++){
+                                    var cellAddress=XLSX.utils.encode_cell({r:iRow, c:iColumn});
+                                    var cellOfFieldName=ws[cellAddress];
+                                    if(cellOfFieldName && cellOfFieldName.v){
+                                        var value = cellOfFieldName.v.toString().trim();
+                                        if(value){
+                                            var newRow:{
+                                                indicador: string,
+                                                tipo: string,
+                                                tab: string,
+                                                celda: string,
+                                                dato: string
+                                            } = {
+                                                indicador: indicador.indicador,
+                                                tipo: tipo,
+                                                tab: sheet,
+                                                celda: cellAddress,
+                                                dato: value
                                             }
-                                        );
+                                            var primaryKeyValues = indicadoresTextosTableDef.primaryKey.map(function(pkField){
+                                                return newRow[pkField];
+                                            });
+                                            await context.be.procedure.table_record_save.coreFunction(
+                                                context,{
+                                                    table: indicadoresTextosTableDef.tableName, 
+                                                    primaryKeyValues,
+                                                    newRow,
+                                                    oldRow:[],
+                                                    status:'update',
+                                                    insertIfNotUpdate:true,
+                                                    masive:true
+                                                }
+                                            );
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                }catch(err){
+                    context.informProgress({message:`ERROR en el archivo ${indicador.archivo}`});
+                    context.informProgress({message:err.message});
+                    errores++;
                 }
             };
-            return 'ok';
+            return errores?`Hubo ${errores==1?`un error`:`${errores} errores`} al procesar los archivos`:'ok';
         }
     },
     {
