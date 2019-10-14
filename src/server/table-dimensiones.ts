@@ -19,6 +19,7 @@ export function dimensiones(context:TableContext):TableDefinition{
         primaryKey:['dimension'],
         detailTables:[
             {table: 'indicadores', fields:['dimension'], abr:'I', label:'indicadores'}
-        ]
+        ],
+        sortColumns:[{column:'orden'}]
     }
 }
