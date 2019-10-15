@@ -389,6 +389,7 @@ const TituloDimension = (props:{dimension:Dimension})=>(
 )
 
 const SeccionDimension = (props:{dimension:Dimension})=>{
+    //importante: SINCRONIZAR LOS TAMAÑOS CON media queries styles.styl
     var tamannio3columnas = window.matchMedia("((min-width: 550px) and (max-width: 720px)||(min-width: 1500px) and (max-width: 1900px))")
     var misColumnas = tamannio3columnas.matches?3:2;
     return <>
