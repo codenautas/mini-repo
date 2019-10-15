@@ -388,25 +388,13 @@ const TituloDimension = (props:{dimension:Dimension})=>(
     </div>
 )
 
-const SeccionDimension = (props:{dimension:Dimension})=>(
-    <>
-        <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension} mis-columnas="2"
+const SeccionDimension = (props:{dimension:Dimension})=>{
+    var misColumnas = (document.body.clientWidth>550 && document.body.clientWidth>720 || document.body.clientWidth>1500 && document.body.clientWidth>1900)?3:2;
+    return <>
+        <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension} mis-columnas={misColumnas}
             style={{
                 backgroundColor:props.dimension.color,
-                gridRow:'span '+(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)
-            }}
-        >
-            <TituloDimension dimension={props.dimension} />
-            <div className="caja-int-dimension">
-                {props.dimension.indicadores.map( indicador =>
-                    <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
-                )}
-            </div>
-        </div>
-        <div className="caja-dimension" id-dimension={props.dimension.dimension} mis-columnas="3"
-            style={{
-                backgroundColor:props.dimension.color,
-                gridRow:'span '+(Math.floor((props.dimension.indicadores.length+3-1)/3)*2+1)
+                gridRow:'span '+(Math.floor((props.dimension.indicadores.length+misColumnas-1)/misColumnas)*2+1)
             }}
         >
             <TituloDimension dimension={props.dimension} />
@@ -417,7 +405,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>(
             </div>
         </div>
     </>
-)
+}
 
 const ListaIndicadores = (props:{dimensiones:Dimension[]}) => (
     <div id="pizarron">

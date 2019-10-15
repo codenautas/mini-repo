@@ -46,6 +46,8 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
         action:'excel_leer',
         parameters:[],
         coreFunction:async function(context:ProcedureContext,_parameters:CoreFunctionParameters){
+            context.informProgress({message:`borrando palabras antiguas...`});
+            await context.client.query(`DELETE FROM indicadores_textos`).execute();
             var sql=`
                 SELECT *
                     FROM indicadores
