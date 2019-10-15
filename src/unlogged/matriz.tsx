@@ -389,7 +389,8 @@ const TituloDimension = (props:{dimension:Dimension})=>(
 )
 
 const SeccionDimension = (props:{dimension:Dimension})=>{
-    var misColumnas = (document.body.clientWidth>550 && document.body.clientWidth>720 || document.body.clientWidth>1500 && document.body.clientWidth>1900)?3:2;
+    var tamannio3columnas = window.matchMedia("((min-width: 550px) and (max-width: 720px)||(min-width: 1500px) and (max-width: 1900px))")
+    var misColumnas = tamannio3columnas.matches?3:2;
     return <>
         <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension} mis-columnas={misColumnas}
             style={{

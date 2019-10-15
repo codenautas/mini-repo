@@ -16,12 +16,6 @@ tamannio-letra(titulo_indicador, pastillas)
     font-size (titulo_indicador*1.7*pastillas/3)
   .caja-int-dimension
     grid-template-columns repeat(pastillas, 1fr)
-  if pastillas == 3 
-    div[mis-columnas="3"]
-      display block
-  if pastillas == 2
-    div[mis-columnas="2"]
-      display block
 
 tres-columnas()
 
@@ -36,7 +30,7 @@ body
   font-family: 'Roboto', sans-serif;
 
   [mis-columnas]
-    display none
+    display block
   
   @media (min-width: 1900px)
     display grid
