@@ -406,7 +406,9 @@ const SeccionDimension = (props:{dimension:Dimension})=>{
             }}
         >
             <TituloDimension dimension={props.dimension} />
-            <div className="caja-int-dimension">
+            <div className="caja-int-dimension" style={{
+                gridTemplateColumns: "repeat("+misColumnas+", 1fr)",
+            }}>
                 {props.dimension.indicadores.map( indicador =>
                     <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
                 )}
