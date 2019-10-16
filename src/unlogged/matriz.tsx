@@ -389,26 +389,16 @@ const TituloDimension = (props:{dimension:Dimension})=>(
 )
 
 const SeccionDimension = (props:{dimension:Dimension})=>{
-    //importante: SINCRONIZAR LOS TAMAÑOS CON media queries styles.styl
-    var tamannio3columnas1 = window.matchMedia("(min-width: 550px) and (max-width: 720px)");
-    var tamannio3columnas2 = window.matchMedia("(min-width: 1500px) and (max-width: 1900px)");
-    var updateMisColumnas=function updateMisColumnas(){
-        setMisColumnas((tamannio3columnas1.matches || tamannio3columnas2.matches)?3:2);
-    }
-    tamannio3columnas1.addListener(updateMisColumnas)
-    tamannio3columnas2.addListener(updateMisColumnas)
-    const [misColumnas, setMisColumnas] = useState<number>((tamannio3columnas1.matches || tamannio3columnas2.matches)?3:2);
     return <>
-        <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension} mis-columnas={misColumnas}
+        <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension}  
+            mis-filas-en-2={(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)}
+            mis-filas-en-3={(Math.floor((props.dimension.indicadores.length+3-1)/3)*2+1)}
             style={{
                 backgroundColor:props.dimension.color,
-                gridRow:'span '+(Math.floor((props.dimension.indicadores.length+misColumnas-1)/misColumnas)*2+1)
             }}
         >
-            <TituloDimension dimension={props.dimension} />
-            <div className="caja-int-dimension" style={{
-                gridTemplateColumns: "repeat("+misColumnas+", 1fr)",
-            }}>
+            <TituloDimension dimension={props.dimension}/>
+            <div className="caja-int-dimension">
                 {props.dimension.indicadores.map( indicador =>
                     <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
                 )}

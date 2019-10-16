@@ -6,15 +6,28 @@ sep_cajas = 2%
 margen_sup_caja = 1%
 margen_tit_dim = 2%
 sep_sup_titulo = 0
-
 titulo = 10%
+comilla = '"'
 
 tamannio-letra(titulo_indicador, pastillas)
   .nombre-indicador
     font-size titulo_indicador
   .titulo-dimension
     font-size (titulo_indicador*1.7*pastillas/3)
-
+  .caja-int-dimension
+    grid-template-columns repeat(pastillas, 1fr)
+  .caja-dimension
+    if(pastillas==2)
+      grid-row span 15
+      for n in (1..150)
+        &[mis-filas-en-2={comilla}{n}{comilla}]
+          grid-row span n
+    else
+      grid-row span 15
+      for n in (1..100)
+        &[mis-filas-en-2={comilla}{n}{comilla}]
+          grid-row span n
+  
 tres-columnas()
 
 dos-columnas()
@@ -26,11 +39,7 @@ body
   padding-top 3px
   padding-bottom 3px
   font-family: 'Roboto', sans-serif;
-
-  [mis-columnas]
-    display block
   
-  //importante: SINCRONIZAR LOS TAMAÑOS CON matriz.tsx window.matchMedia
   @media (min-width: 1900px)
     display grid
     grid-template-columns repeat(4, 1fr);
@@ -155,9 +164,6 @@ body
       box-shadow 4px 7px 6px -6px black
     box-shadow 8px 12px 6px -6px black, -6px -6px 6px -6px rgba(250,250,250,0.7)
     cursor pointer
-  
-  [id-dimension]
-    grid-row auto
 
 .img-preview
   float left
