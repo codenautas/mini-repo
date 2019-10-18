@@ -38,7 +38,9 @@ export function indicadores(context:TableContext):TableDefinition{
         ],
         constraints:[
             {constraintType:'unique', fields:['archivo']},
-            {constraintType:'unique', fields:['preview']}
+            {constraintType:'unique', fields:['preview']},
+            {constraintType:'unique', fields:['abreviacion']},
+            {constraintType:'unique', fields:['denominacion']}
         ],
         sql:{
             isTable:true,
