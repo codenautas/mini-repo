@@ -132,7 +132,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             }}={
                 preview:{
                     nombre:'preview',
-                    sqlset:`preview = coalesce(preview, $1, replace(archivo,'.xlsx','.png'))`
+                    sqlset:`preview = coalesce(preview, replace(archivo,'.xlsx','.png'), $1)`
                 },
                 archivo:{
                     nombre:'archivo',

@@ -77,7 +77,7 @@ myOwn.clientSides.subirAdjunto = {
                     indicador:depot.row.indicador,
                 },
                 function(result:any){
-                    depot.rowControls.archivo.setTypedValue(result.nombre);
+                    depot.rowControls.archivo.setTypedValue(result.nombre, true);
                     return result.message;
                 },
                 showWithMiniMenu,
@@ -87,45 +87,49 @@ myOwn.clientSides.subirAdjunto = {
         var botonCargarImagen = html.button('imagen').create();
         depot.rowControls[fieldName].appendChild(botonCargarImagen);
         botonCargarImagen.addEventListener('click', async function(){
-            var disableKeysFun = function(){
-                DialogPromise.defaultOpts.disableKeyboads=true;
-            }
-            DialogPromise.defaultOpts.disableKeyboads=false;
-            var adjuntoDivId = "cargar-adjunto";
-            var imgId = "img-adjunto";
-            var adjuntoDiv = html.div({id:adjuntoDivId},[]).create();
-            var botonAceptar = html.button({class:'primary-background'}, 'aceptar').create()
-            botonAceptar.onclick=async function(){
-                var img = document.getElementById(imgId) as HTMLImageElement;
-                if(img.src){
-                    var result = await my.ajax.archivo_subir({
-                        campo:'preview',
-                        indicador:depot.row.indicador,
-                        files:img.losFiles
-                    })
-                    depot.rowControls.preview.setTypedValue(result.nombre);
-                    mainContainerDiv.dialogPromiseDone();
+            if(depot.rowControls['archivo'].getTypedValue()){
+                var disableKeysFun = function(){
+                    DialogPromise.defaultOpts.disableKeyboads=true;
                 }
-            };
-            var botonCancelar = html.a({class:'danger'}, 'cancelar').create()
-            botonCancelar.onclick=function(){
-                mainContainerDiv.dialogPromiseDone();
-            };
-            var mainContainerDiv = html.div({id:'cargar-adjunto-main'},[
-                adjuntoDiv,
-                botonCancelar,
-                botonAceptar,
-            ]).create();
-            var opts = {
-                buttonsDef:[]
-            };
-            try{
-                var parametrosImagen: ParametrosImagen = await myOwn.ajax.parametros_imagen_traer({});
-                var resultPromise = confirmPromise(mainContainerDiv,opts)
-                previsualizarImagen(imgId, adjuntoDivId, parametrosImagen);
-                await resultPromise; 
-            }finally{
-                disableKeysFun
+                DialogPromise.defaultOpts.disableKeyboads=false;
+                var adjuntoDivId = "cargar-adjunto";
+                var imgId = "img-adjunto";
+                var adjuntoDiv = html.div({id:adjuntoDivId},[]).create();
+                var botonAceptar = html.button({class:'primary-background'}, 'aceptar').create()
+                botonAceptar.onclick=async function(){
+                    var img = document.getElementById(imgId) as HTMLImageElement;
+                    if(img.src){
+                        var result = await my.ajax.archivo_subir({
+                            campo:'preview',
+                            indicador:depot.row.indicador,
+                            files:img.losFiles
+                        })
+                        depot.rowControls.preview.setTypedValue(result.nombre, true);
+                        mainContainerDiv.dialogPromiseDone();
+                    }
+                };
+                var botonCancelar = html.a({class:'danger'}, 'cancelar').create()
+                botonCancelar.onclick=function(){
+                    mainContainerDiv.dialogPromiseDone();
+                };
+                var mainContainerDiv = html.div({id:'cargar-adjunto-main'},[
+                    adjuntoDiv,
+                    botonCancelar,
+                    botonAceptar,
+                ]).create();
+                var opts = {
+                    buttonsDef:[]
+                };
+                try{
+                    var parametrosImagen: ParametrosImagen = await myOwn.ajax.parametros_imagen_traer({});
+                    var resultPromise = confirmPromise(mainContainerDiv,opts)
+                    previsualizarImagen(imgId, adjuntoDivId, parametrosImagen);
+                    await resultPromise; 
+                }finally{
+                    disableKeysFun
+                }
+            }else{
+                alertPromise('Debe cargar primero el Excel')
             }
         });
     }
@@ -133,17 +137,18 @@ myOwn.clientSides.subirAdjunto = {
 
 myOwn.clientSides.bajarAdjunto = {
     update:function(depot:myOwn.Depot, fieldName:string):void{
-    },
-    prepare:function(depot:myOwn.Depot, fieldName:string):void{
         let td=depot.rowControls[fieldName];
-        let imagenFileName=depot.row.preview;
-        if(imagenFileName){
-            td.appendChild(html.a({class:'link-descarga-archivo', href:`download/file?name=${imagenFileName}&dimension=${depot.row.dimension}`, download:imagenFileName},"imagen").create());
-        }
+        td.innerHTML='';
         let excelFileName=depot.row.archivo;
         if(excelFileName){
             td.appendChild(html.a({class:'link-descarga-archivo', href:`download/file?name=${excelFileName}&dimension=${depot.row.dimension}`, download:excelFileName},"excel").create());            
         }
+        let imagenFileName=depot.row.preview;
+        if(imagenFileName){
+            td.appendChild(html.a({class:'link-descarga-archivo', href:`download/file?name=${imagenFileName}&dimension=${depot.row.dimension}`, download:imagenFileName},"imagen").create());
+        }
+    },
+    prepare:function(depot:myOwn.Depot, fieldName:string):void{
     }
 }
 
