@@ -36,6 +36,10 @@ export function indicadores(context:TableContext):TableDefinition{
             // {references:'fuente'  , fields:['fuente']},
             // {references:'um'   , fields:['um']}
         ],
+        constraints:[
+            {constraintType:'unique', fields:['archivo']},
+            {constraintType:'unique', fields:['preview']}
+        ],
         sql:{
             isTable:true,
             from: `(
