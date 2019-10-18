@@ -4,7 +4,6 @@ import {TableDefinition, TableContext} from "./types-mini-repo"
 
 export function indicadores(context:TableContext):TableDefinition{
     var {es} = context;
-    var importando:boolean=true;
     return {
         name:'indicadores',
         editable: es.coordinador,
@@ -14,8 +13,8 @@ export function indicadores(context:TableContext):TableDefinition{
             {name:'indicador'         , title:'código indicador'                     , typeName:'text' , editable:es.coordinador, nullable:false},
             {name:'abreviacion'       , title:'abr. indicador'                       , typeName:'text' , isName:true},
             {name:'denominacion'      , title:'nombre indicador'                     , typeName:'text' },
-            {name:'archivo'           , title:'archivo'        , editable:importando , typeName:'text'},
-            {name:'preview'           , title:'archivo gráfico', editable:importando , typeName:'text'},
+            {name:'archivo'           , title:'archivo'        , editable:false , typeName:'text'},
+            {name:'preview'           , title:'archivo gráfico', editable:false , typeName:'text'},
             {name:'orden'             , title:'orden'                                , typeName:'integer' },
             {name:'fuente'            , title:'fuente'                               , typeName:'text'},
             {name:'um'                , title:'unidad de medida'                     , typeName:'text'},
