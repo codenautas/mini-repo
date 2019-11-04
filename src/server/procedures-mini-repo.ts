@@ -25,7 +25,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             var sql3=`
                 SELECT i.*, 
                         string_to_array(
-                            concat_ws(' ', d.denominacion, abreviacion, i.denominacion, indicador, fuente, universo, def_con, def_ope, 
+                            concat_ws(' ', d.denominacion, d.nombre_cuadro, abreviacion, i.denominacion, indicador, fuente, universo, def_con, def_ope, 
                                 (select string_agg(it.dato, ' ') from indicadores_textos it where it.indicador=i.indicador)
                             ),' '
                         ) as palabras

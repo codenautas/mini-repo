@@ -13,6 +13,7 @@ export function indicadores(context:TableContext):TableDefinition{
             {name:'indicador'         , title:'código indicador'                     , typeName:'text' , editable:es.coordinador, nullable:false},
             {name:'abreviacion'       , title:'abr. indicador'                       , typeName:'text' , isName:true},
             {name:'denominacion'      , title:'nombre indicador'                     , typeName:'text' },
+            {name:'nombre_cuadro'                                                    , typeName:'text' },
             {name:'archivo'           , title:'archivo'        , editable:false , typeName:'text'},
             {name:'preview'           , title:'archivo gráfico', editable:false , typeName:'text'},
             {name:'orden'             , title:'orden'                                , typeName:'integer' },
@@ -40,6 +41,7 @@ export function indicadores(context:TableContext):TableDefinition{
             {constraintType:'unique', fields:['preview']},
             {constraintType:'unique', fields:['abreviacion']},
             {constraintType:'unique', fields:['denominacion']}
+            {constraintType:'unique', fields:['nombre_cuadro']}
         ],
         sql:{
             isTable:true,

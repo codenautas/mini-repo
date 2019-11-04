@@ -41,6 +41,7 @@ type Indicador = {
     indicador:string,
     abreviacion:string,
     denominacion:string,
+    nombre_cuadro:string,
     dimension:string,
     archivo:string,
     preview:string,
@@ -301,7 +302,7 @@ function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlo
 }
 
 const TituloIndicador = (props:{indicador:Indicador})=>(
-    <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion}</div>
+    <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion||props.indicador.nombre_cuadro}</div>
 )
 
 const CampoFicha = (props:{valor:string, nombre:string}) =>
@@ -355,10 +356,7 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
             <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    {props.indicador.abreviacion||''}
-                </DialogContentText>
-                <DialogContentText id="alert-dialog-description">
-                    {props.indicador.denominacion||''}
+                    {props.indicador.nombre_cuadro||''}
                 </DialogContentText>
                 <ImagenPreview indicador={props.indicador}/>
                 <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
