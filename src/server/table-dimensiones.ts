@@ -10,7 +10,8 @@ export function dimensiones(context:TableContext):TableDefinition{
         editable: coordinador,
         fields: [
             {name: 'dimension'              ,typeName:'text'      ,nullable:false, editable:admin},
-            {name: 'denominacion'           ,typeName:'text'      , title:'dimensión', isName:true},
+            {name: 'denominacion'           ,typeName:'text'     , title:'dimensión', isName:true},
+            {name: 'descripcion'            ,typeName:'text'      },
             {name: 'orden'                  ,typeName:'integer'   },
             {name: 'ocultar'                ,typeName:'boolean'   },
             {name: 'icono'                  ,typeName:'text'      },
