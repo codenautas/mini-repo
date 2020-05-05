@@ -8,10 +8,8 @@ import {compareForOrder} from "best-globals";
 import {
     // alfabéticamente:
     AppBar,
-    Box,
     Button,
     Collapse,
-    Container,
     CssBaseline,
     Dialog,
     DialogActions,
@@ -91,9 +89,8 @@ export const materialIoIconsSvgPath={
 
 const ICON = likeAr(materialIoIconsSvgPath).map(svgText=> () =>
     <SvgIcon><path d={svgText}/></SvgIcon>
-);
+).plain();
 
-const CloseIcon = ICON.Close;
 const InfoIcon = ICON.Info;
 const KeyboardArrowUpIcon = ICON.KeyboardArrowUp;
 const MenuIcon = ICON.Menu;
@@ -285,7 +282,7 @@ function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlo
                     </ListItemWithSubList>
                     <Divider />
                     <ListItemWithSubList primary="Indicadores" secondary="en orden alfabético" open={menuIndicadores} onToggle={setMenuIndicadores}>
-                        {indicadoresOrdenados.map(({indicador, denominacion}:Indicador) => (
+                        {indicadoresOrdenados.map(({denominacion}:Indicador) => (
                             <ListItem className={classesMenu.nested} button key={denominacion}>
                                 <ListItemText primary={denominacion} onClick={()=>{
                                     setMenuAbierto(false);

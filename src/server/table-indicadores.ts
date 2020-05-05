@@ -40,7 +40,7 @@ export function indicadores(context:TableContext):TableDefinition{
             {constraintType:'unique', fields:['archivo']},
             {constraintType:'unique', fields:['preview']},
             {constraintType:'unique', fields:['abreviacion']},
-            {constraintType:'unique', fields:['denominacion']}
+            {constraintType:'unique', fields:['denominacion']},
             {constraintType:'unique', fields:['nombre_cuadro']}
         ],
         sql:{
