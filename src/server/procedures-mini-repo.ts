@@ -13,7 +13,7 @@ import { indicadores_textos } from "./table-indicadores_textos";
 import { dimensiones } from "table-dimensiones";
 
 function json(sql:string, orderby:string){
-    return `(SELECT jsonb_agg(to_jsonb(j.*) ORDER BY ${orderby}) from (${sql}) as j)`
+    return `(SELECT coalesce(jsonb_agg(to_jsonb(j.*) ORDER BY ${orderby}),'[]'::jsonb) from (${sql}) as j)`
 }
 
 export const ProceduresMiniRepo : ProcedureDef[] = [
