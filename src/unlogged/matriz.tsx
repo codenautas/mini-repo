@@ -56,6 +56,7 @@ type Indicador = {
 
 type Dimension = {
     dimension:string,
+    abreviacion:string,
     denominacion:string,
     color:string,
     indicadores:Indicador[]
@@ -375,10 +376,14 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
     </>;
 }
 
-const TituloDimension = (props:{dimension:Dimension})=>(
+const TituloDimension = (props:{dimension:Dimension, color:string})=>(
     <div className="titulo-dimension-contenedor">
         <div className="titulo-dimension">
-            <span className="nombre-dimension" >{props.dimension.denominacion}</span>
+            <div className="bullet-dimension" style={{
+                backgroundColor:'white',
+                color:props.color
+            }}>{props.dimension.dimension}</div>
+            <div className="nombre-dimension" >{props.dimension.abreviacion||props.dimension.denominacion}</div>
         </div>
     </div>
 )
@@ -392,7 +397,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>{
                 backgroundColor:props.dimension.color,
             }}
         >
-            <TituloDimension dimension={props.dimension}/>
+            <TituloDimension dimension={props.dimension} color={props.dimension.color}/>
             <div className="caja-int-dimension">
                 {props.dimension.indicadores.map( indicador =>
                     <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>

@@ -14,6 +14,18 @@ tamannio-letra(titulo_indicador, pastillas)
     font-size titulo_indicador
   .titulo-dimension
     font-size (titulo_indicador*1.7*pastillas/3)
+    display flex
+    .bullet-dimension
+      flex none
+      width 1.2em
+      align-self center
+      font-size 120%
+      text-align center
+      border-radius 25px
+      margin-left 0px
+      margin-right 10px
+    .nombre-dimension
+      flex auto
   .caja-int-dimension
     grid-template-columns repeat(pastillas, 1fr)
   .caja-dimension
@@ -100,7 +112,7 @@ body
   
 
   .titulo-dimension-contenedor
-    padding-bottom 8%
+    padding-bottom 16%
     width 97%
     position relative
     margin margen_tit_dim

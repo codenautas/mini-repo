@@ -48,6 +48,8 @@
     "build": "(tsc -p tsconfig-client.json || echo \"continue w/error\") && (tsc -p tsconfig-tests.json || echo \"continue w/error\") && (tsc -p tsconfig-server.json  || echo \"continue w/error\") && (tsc -p tsconfig-unlogged.json || echo \"continue w/error\") && mixin-patch",
     "watch:buildC": "(tsc -p tsconfig-client.json --watch || echo \"continue w/error\")",
     "watch:buildS": "(tsc -p tsconfig-server.json --watch || echo \"continue w/error\")",
+    "watch:buildU": "(tsc -p tsconfig-unlogged.json --watch || echo \"continue w/error\")",
+    "mixin-patch": "mixin-patch",
     "test": "mocha --reporter spec --bail --check-leaks test/",
     "start": "node dist/server/server-mini-repo.js",
     "dump": "npm start -- --dump-db",

@@ -7,6 +7,15 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Fast Launch Program",
+            "program": "${workspaceFolder}/dist/server/server-mini-repo.js",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Program",
             "preLaunchTask": "build-all",
             "program": "${workspaceFolder}/dist/server/server-mini-repo.js",

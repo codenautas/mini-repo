@@ -10,8 +10,8 @@ export function dimensiones(context:TableContext):TableDefinition{
         editable: coordinador,
         fields: [
             {name: 'dimension'              ,typeName:'text'      ,nullable:false, editable:admin},
-            {name: 'denominacion'           ,typeName:'text'     , title:'dimensión', isName:true},
-            {name: 'descripcion'            ,typeName:'text'      },
+            {name: 'denominacion'           ,typeName:'text'      , isName:true},
+            {name: 'abreviacion'            ,typeName:'text'      },
             {name: 'orden'                  ,typeName:'integer'   },
             {name: 'ocultar'                ,typeName:'boolean'   },
             {name: 'icono'                  ,typeName:'text'      },
@@ -20,6 +20,10 @@ export function dimensiones(context:TableContext):TableDefinition{
         primaryKey:['dimension'],
         detailTables:[
             {table: 'indicadores', fields:['dimension'], abr:'I', label:'indicadores'}
+        ],
+        constraints:[
+            {constraintType:'unique', fields:['denominacion']},
+            {constraintType:'unique', fields:['abreviacion']}
         ],
         sortColumns:[{column:'orden'}]
     }
