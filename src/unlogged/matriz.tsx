@@ -193,7 +193,13 @@ function ListItemWithSubList(props:{ primary:string, secondary?:string, open:boo
     </>
 }
 
-function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlogged:boolean, onSearch: (value: string) => void}) {
+function SearchAppBar(props: { 
+    dimensiones:Dimension[], 
+    nombre_sistema:string, 
+    search:string|null, 
+    unlogged:boolean, 
+    onSearch: (value: string) => void
+}) {
     var search = props.search;
     var [menuAbierto, setMenuAbierto] = useState(false);
     var [irA, setIrA] = useState<string|null>(null);
@@ -224,7 +230,7 @@ function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlo
     );
     const classesMenu = useStylesMenu();
     var indicadoresOrdenados = ([] as Indicador[]).concat(...props.dimensiones.map(({indicadores}:Dimension) => indicadores));
-    indicadoresOrdenados.sort(compareForOrder([{column:'denominacion', order:1}]))
+    indicadoresOrdenados.sort(compareForOrder([{column:'denominacion' as 'denominacion', order:1 as 1}]))
     return (
         <>
             <HideOnScroll active={props.unlogged}>
@@ -240,7 +246,7 @@ function SearchAppBar(props: { dimensiones:Dimension[], search:string|null, unlo
                             <MenuIcon />
                         </IconButton>
                         <Typography className={classes.title} variant="h6" noWrap>
-                            Banco de Datos 
+                            {props.nombre_sistema}
                             {props.unlogged?<img className="local-logo" src="./storage/local-logo.png" />:null}
                         </Typography>
                         <div className={classes.search}>
@@ -354,7 +360,7 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
             <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    {props.indicador.nombre_cuadro||''}
+                    {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
                 </DialogContentText>
                 <ImagenPreview indicador={props.indicador}/>
                 <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
@@ -376,19 +382,21 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
     </>;
 }
 
-const TituloDimension = (props:{dimension:Dimension, color:string})=>(
+const TituloDimension = (props:{dimension:Dimension, color:string, mostrar_codigo_dimension:boolean})=>(
     <div className="titulo-dimension-contenedor">
         <div className="titulo-dimension">
+            {props.mostrar_codigo_dimension?
             <div className="bullet-dimension" style={{
                 backgroundColor:'white',
                 color:props.color
             }}>{props.dimension.dimension}</div>
+            :null}
             <div className="nombre-dimension" >{props.dimension.abreviacion||props.dimension.denominacion}</div>
         </div>
     </div>
 )
 
-const SeccionDimension = (props:{dimension:Dimension})=>{
+const SeccionDimension = (props:{dimension:Dimension, mostrar_codigo_dimension:boolean})=>{
     return <>
         <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension}  
             mis-filas-en-2={(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)}
@@ -397,7 +405,7 @@ const SeccionDimension = (props:{dimension:Dimension})=>{
                 backgroundColor:props.dimension.color,
             }}
         >
-            <TituloDimension dimension={props.dimension} color={props.dimension.color}/>
+            <TituloDimension dimension={props.dimension} color={props.dimension.color} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
             <div className="caja-int-dimension">
                 {props.dimension.indicadores.map( indicador =>
                     <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
@@ -407,10 +415,10 @@ const SeccionDimension = (props:{dimension:Dimension})=>{
     </>
 }
 
-const ListaIndicadores = (props:{dimensiones:Dimension[]}) => (
+const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimension:boolean}) => (
     <div id="pizarron">
         {props.dimensiones.map( dimension =>
-            <SeccionDimension dimension={dimension} key={dimension.dimension} />
+            <SeccionDimension dimension={dimension} key={dimension.dimension} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
         )}
     </div>
 )
@@ -444,7 +452,12 @@ function ScrollTop(props: any) {
     );
 }
 
-function AppMiniRepo(props:{dimensiones:Dimension[], unlogged:boolean}){
+function AppMiniRepo(props:{
+    dimensiones:Dimension[], 
+    unlogged:boolean,
+    nombre_sistema:string, 
+    mostrar_codigo_dimension:boolean,
+}){
     const [search, setSearch] = useState<string|null>(null);
     const searchChange = setSearch;
     const filteredResult = props.dimensiones.map(dimension=>
@@ -460,8 +473,14 @@ function AppMiniRepo(props:{dimensiones:Dimension[], unlogged:boolean}){
     return <React.StrictMode>
         <CssBaseline />
         <div className="matriz-comparacion">
-            <SearchAppBar dimensiones={props.dimensiones} search={search} onSearch={searchChange} unlogged={props.unlogged}/>
-            <ListaIndicadores dimensiones={filteredResult}/>
+            <SearchAppBar 
+                dimensiones={props.dimensiones} 
+                nombre_sistema={props.nombre_sistema} 
+                search={search} 
+                onSearch={searchChange} 
+                unlogged={props.unlogged}
+            />
+            <ListaIndicadores dimensiones={filteredResult} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
             {!resultCount?
                     <Snackbar
                         anchorOrigin={{
@@ -511,9 +530,18 @@ function AppMiniRepo(props:{dimensiones:Dimension[], unlogged:boolean}){
     </React.StrictMode>
 }
 
-export function mostrar(result:{dimensiones:Dimension[]}, unlogged:boolean){
+export function mostrar(result:{
+    dimensiones:Dimension[],
+    nombre_sistema:string,
+    mostrar_codigo_dimension:boolean,
+}, unlogged:boolean){
     ReactDOM.render(
-        <AppMiniRepo dimensiones={result.dimensiones} unlogged={unlogged}/>
+        <AppMiniRepo 
+            dimensiones={result.dimensiones} 
+            unlogged={unlogged}
+            nombre_sistema={result.nombre_sistema} 
+            mostrar_codigo_dimension={result.mostrar_codigo_dimension}
+        />
         , document.getElementById("main_layout")
     );
 }

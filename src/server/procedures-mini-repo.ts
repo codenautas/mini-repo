@@ -1,16 +1,13 @@
 "use strict";
 
-import { ProcedureDef } from "./types-mini-repo";
+import { ProcedureDef, TableContext } from "./types-mini-repo";
 import { ProcedureContext, CoreFunctionParameters, UploadedFileInfo } from "backend-plus";
 export * from "./types-mini-repo";
 import * as fs from "fs-extra";
 import * as XLSX from "xlsx-style";
 import * as Path from "path";
 
-import * as bestGlobals from "best-globals";
-import * as likeAr from 'like-ar';
 import { indicadores_textos } from "./table-indicadores_textos";
-import { dimensiones } from "table-dimensiones";
 
 function json(sql:string, orderby:string){
     return `(SELECT coalesce(jsonb_agg(to_jsonb(j.*) ORDER BY ${orderby}),'[]'::jsonb) from (${sql}) as j)`
@@ -36,10 +33,14 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
                 SELECT *, ${json(sql3,'orden, indicador')} as indicadores
                     FROM dimensiones d 
             `;
-            var sql=json(sql2, 'orden, dimension')
+            var sql=`
+                SELECT ${json(sql2, 'orden, dimension')} as dimensiones,
+                        nombre_sistema, mostrar_codigo_dimension
+                  FROM parametros
+            `;
             fs.writeFile('local-sql-core.sql',sql);
-            var result = await context.client.query(sql).fetchUniqueValue();
-            return {dimensiones:result.value};
+            var result = await context.client.query(sql).fetchUniqueRow();
+            return result.row;
         }
     },
     {
@@ -54,7 +55,10 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
                     where archivo<>''
             `;
             var indicadores = await context.client.query(sql).fetchAll();
-            var indicadoresTextosTableDef = context.be.tableDefAdapt(indicadores_textos(context),context);
+            var indicadoresTextosTableDef = context.be.tableDefAdapt(indicadores_textos(
+                // @ts-ignore sabemos que tiene el campo "es"
+                context as TableContext
+            ),context);
             var tipo = 'excel';
             var errores = 0;
             for (let indicador of indicadores.rows){
@@ -87,6 +91,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
                                                 dato: value
                                             }
                                             var primaryKeyValues = indicadoresTextosTableDef.primaryKey.map(function(pkField){
+                                                // @ts-ignore existe, es la pk!
                                                 return newRow[pkField];
                                             });
                                             await context.be.procedure.table_record_save.coreFunction(
