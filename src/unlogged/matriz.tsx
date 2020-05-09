@@ -379,6 +379,7 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension, model
                     <DialogContentText id="alert-dialog-description">
                         {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
                     </DialogContentText>
+                    <ImagenPreview indicador={props.indicador}/>
                     <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
                     <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
                     <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
