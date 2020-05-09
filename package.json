@@ -1,7 +1,7 @@
 {
   "name": "mini-repo",
   "description": "Mini repositorio",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "main": "dist/server/app-mini-repo.js",
   "types": "dist/server/app-mini-repo.d.ts",
@@ -19,13 +19,13 @@
     "react-redux": "^7.2.0",
     "yazl": "~2.5.1",
     "ajax-best-promise": "~0.3.7",
-    "backend-plus": "~1.3.0",
-    "best-globals": "~0.10.23",
+    "backend-plus": "~1.3.1",
+    "best-globals": "~0.10.24",
     "js-to-html": "~1.0.11",
     "like-ar": "~0.2.19",
     "material-styles": "~0.0.7",
     "mini-tools": "~1.0.9",
-    "pg-promise-strict": "~1.1.0",
+    "pg-promise-strict": "~1.1.1",
     "require-bro": "~0.1.13"
   },
   "devDependencies": {
@@ -37,7 +37,7 @@
     "@types/yazl": "~2.4.2",
     "discrepances": "~0.2.4",
     "pg-triggers": "~0.2.3",
-    "types.d.ts": "~0.4.18",
+    "types.d.ts": "~0.5.0",
     "mixin-patch": "~0.3.3"
   },
   "engines": {

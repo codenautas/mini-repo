@@ -5,7 +5,7 @@ import { ProcedureContext, CoreFunctionParameters, UploadedFileInfo } from "back
 export * from "./types-mini-repo";
 import * as fs from "fs-extra";
 import * as XLSX from "xlsx-style";
-import * as Path from "path";
+// import * as Path from "path";
 
 import { indicadores_textos } from "./table-indicadores_textos";
 
@@ -35,7 +35,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             `;
             var sql=`
                 SELECT ${json(sql2, 'orden, dimension')} as dimensiones,
-                        nombre_sistema, mostrar_codigo_dimension
+                        nombre_sistema, mostrar_codigo_dimension, modelo_ficha
                   FROM parametros
             `;
             fs.writeFile('local-sql-core.sql',sql);
@@ -150,7 +150,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             const campoDef = campos[parameters.campo];
             context.informProgress({message:be.messages.fileUploaded});
             let file = files![0]
-            let ext = Path.extname(file.path).substr(1);
+            // let ext = Path.extname(file.path).substr(1);
             // let originalFilename = file.originalFilename.slice(0,-(ext.length+1));
             let originalFilename = file.originalFilename;
             let filename=originalFilename;

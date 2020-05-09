@@ -27,6 +27,7 @@ export function indicadores(context:TableContext):TableDefinition{
             {name:'uso_alc_lim'       , title:'uso - alcance - limitaciones'         , typeName:'text'},
             {name:'metas'             , title:'metas'                                , typeName:'text'},
             {name:'ods'               , title:'ODS'                                  , typeName:'text'},
+            {name:'ultima_actualizacion', title:'última actualiación'                , typeName:'text'},
             {name:'subir'             , editable:false, clientSide:'subirAdjunto'    , typeName:'text'},
             {name:'bajar'             , editable:false, clientSide:'bajarAdjunto'    , typeName:'text'},
         ],

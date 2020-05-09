@@ -51,6 +51,7 @@ type Indicador = {
     cob:string
     desagregaciones:string
     uso_alc_lim:string,
+    ultima_actualizacion:string,
     palabras:string[]
 }
 
@@ -329,7 +330,7 @@ const ImagenPreview = (props:{indicador:Indicador}) => {
     :null}</>;
 }
 
-const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
+const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension, modelo_ficha:string})=>{
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [open, setOpen] = React.useState(false);
@@ -358,20 +359,36 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension})=>{
             maxWidth="lg"
         >
             <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
-                </DialogContentText>
-                <ImagenPreview indicador={props.indicador}/>
-                <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
-                <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
-                <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
-                <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
-                <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
-                <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
-                <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
-                <CampoFicha valor={props.indicador.uso_alc_lim} nombre="Uso, alcances y limitaciones"/>
-            </DialogContent>
+            {!props.modelo_ficha?
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
+                    </DialogContentText>
+                    <ImagenPreview indicador={props.indicador}/>
+                    <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
+                    <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
+                    <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
+                    <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
+                    <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
+                    <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
+                    <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
+                    <CampoFicha valor={props.indicador.uso_alc_lim} nombre="Uso, alcances y limitaciones"/>
+                </DialogContent>
+            :
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
+                    </DialogContentText>
+                    <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
+                    <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
+                    <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
+                    <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
+                    <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
+                    <CampoFicha valor={props.indicador.fuente}          nombre="Fuente"/>
+                    <CampoFicha valor={props.indicador.uso_alc_lim}     nombre="Uso, alcances y limitaciones"/>
+                    <CampoFicha valor={props.indicador.ultima_actualizacion} nombre="Última actualización"/>
+                </DialogContent>
+            }
             <DialogActions>
                 <Button href={"./download/file?name=" + props.indicador.archivo +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary">Descargar</Button>
                 <Button onClick={handleClose} color="primary" autoFocus>
@@ -396,7 +413,7 @@ const TituloDimension = (props:{dimension:Dimension, color:string, mostrar_codig
     </div>
 )
 
-const SeccionDimension = (props:{dimension:Dimension, mostrar_codigo_dimension:boolean})=>{
+const SeccionDimension = (props:{dimension:Dimension, mostrar_codigo_dimension:boolean, modelo_ficha:string})=>{
     return <>
         <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension}  
             mis-filas-en-2={(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)}
@@ -408,17 +425,17 @@ const SeccionDimension = (props:{dimension:Dimension, mostrar_codigo_dimension:b
             <TituloDimension dimension={props.dimension} color={props.dimension.color} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
             <div className="caja-int-dimension">
                 {props.dimension.indicadores.map( indicador =>
-                    <SeccionIndicador indicador={indicador} dimension={props.dimension} key={indicador.indicador}/>
+                    <SeccionIndicador indicador={indicador} dimension={props.dimension} modelo_ficha={props.modelo_ficha} key={indicador.indicador}/>
                 )}
             </div>
         </div>
     </>
 }
 
-const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimension:boolean}) => (
+const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimension:boolean, modelo_ficha:string}) => (
     <div id="pizarron">
         {props.dimensiones.map( dimension =>
-            <SeccionDimension dimension={dimension} key={dimension.dimension} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
+            <SeccionDimension dimension={dimension} key={dimension.dimension} mostrar_codigo_dimension={props.mostrar_codigo_dimension} modelo_ficha={props.modelo_ficha}/>
         )}
     </div>
 )
@@ -457,6 +474,7 @@ function AppMiniRepo(props:{
     unlogged:boolean,
     nombre_sistema:string, 
     mostrar_codigo_dimension:boolean,
+    modelo_ficha:string
 }){
     const [search, setSearch] = useState<string|null>(null);
     const searchChange = setSearch;
@@ -480,7 +498,7 @@ function AppMiniRepo(props:{
                 onSearch={searchChange} 
                 unlogged={props.unlogged}
             />
-            <ListaIndicadores dimensiones={filteredResult} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
+            <ListaIndicadores dimensiones={filteredResult} mostrar_codigo_dimension={props.mostrar_codigo_dimension} modelo_ficha={props.modelo_ficha}/>
             {!resultCount?
                     <Snackbar
                         anchorOrigin={{
@@ -534,6 +552,7 @@ export function mostrar(result:{
     dimensiones:Dimension[],
     nombre_sistema:string,
     mostrar_codigo_dimension:boolean,
+    modelo_ficha:string
 }, unlogged:boolean){
     ReactDOM.render(
         <AppMiniRepo 
@@ -541,6 +560,7 @@ export function mostrar(result:{
             unlogged={unlogged}
             nombre_sistema={result.nombre_sistema} 
             mostrar_codigo_dimension={result.mostrar_codigo_dimension}
+             modelo_ficha={result.modelo_ficha}
         />
         , document.getElementById("main_layout")
     );

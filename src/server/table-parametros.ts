@@ -16,7 +16,8 @@ export function parametros(context:TableContext):TableDefinition{
             {name:'min_aspect_ratio_imagen_matriz' , typeName:'decimal' , nullable:false, defaultValue:0.8   , editable: false},
             {name:'max_aspect_ratio_imagen_matriz' , typeName:'decimal' , nullable:false, defaultValue:1.777 , editable: false},
             {name:'nombre_sistema'                 , typeName:'text'    , nullable:false, defaultValue:"Banco de Datos"       },
-            {name:'mostrar_codigo_dimension'       , typeName:'boolean' , nullable:false, defaultValue:false                  }
+            {name:'mostrar_codigo_dimension'       , typeName:'boolean' , nullable:false, defaultValue:false                  },
+            {name:'modelo_ficha'                   , typeName:'text'    ,                 defaultValue:'A'                    }
         ],
         primaryKey:['unico_registro'],
         constraints:[
