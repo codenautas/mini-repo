@@ -82,15 +82,18 @@ export const materialIoIconsSvgPath={
     ExpandMore: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z",
     Info: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z",
     Label: "M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z",
+    LabelImportan: "M3.5 18.99l11 .01c.67 0 1.27-.33 1.63-.84L20.5 12l-4.37-6.16c-.36-.51-.96-.84-1.63-.84l-11 .01L8.34 12 3.5 18.99z",
     LocalAtm: "M11 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1h-3v-1h4V8h-2V7h-2v1h-1c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3v1H9v2h2v1zm9-13H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z",
+    KeyboardArrowLeft: "M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z",
+    KeyboardArrowRight: "M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z",
     KeyboardArrowUp: "M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z",
     Menu: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
     SearchIcon: "M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z",
     Warning: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z",
 }
 
-const ICON = likeAr(materialIoIconsSvgPath).map(svgText=> () =>
-    <SvgIcon><path d={svgText}/></SvgIcon>
+const ICON = likeAr(materialIoIconsSvgPath).map(svgText=> (props:any) =>
+    <SvgIcon {...props}><path d={svgText}/></SvgIcon>
 ).plain();
 
 const InfoIcon = ICON.Info;
@@ -306,6 +309,40 @@ function SearchAppBar(props: {
     );
 }
 
+function useBooleanTrigger(trueSetter:(setter:()=>void)=>void){
+    const [state, setter] = useState(false);
+    trueSetter(()=>setter(true));
+    return state;
+}
+
+const useStylesLeftNav = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            position: 'fixed',
+            opacity: 0.3,
+            bottom: theme.spacing(20),
+            left: theme.spacing(2),
+            '&:hover':{
+                opacity: 0.7
+            }
+        },
+    }),
+);
+
+const useStylesRightNav = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            position: 'fixed',
+            opacity: 0.3,
+            bottom: theme.spacing(20),
+            right: theme.spacing(2),
+            '&:hover':{
+                opacity: 0.7
+            }
+        },
+    }),
+);
+
 const TituloIndicador = (props:{indicador:Indicador})=>(
     <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion||props.indicador.nombre_cuadro}</div>
 )
@@ -330,10 +367,92 @@ const ImagenPreview = (props:{indicador:Indicador}) => {
     :null}</>;
 }
 
-const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension, modelo_ficha:string})=>{
+const DialogIndicador =  (props:{
+    indicador:Indicador, 
+    dimension:Dimension, 
+    modelo_ficha:string, 
+    open:boolean,
+    onClose:((event: {}) => void),
+    onPrev:()=>void,
+    onNext:()=>void,
+})=>{
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const [open, setOpen] = React.useState(false);
+    const secs2 = useBooleanTrigger(setter=>setTimeout(setter,3000));
+    const classesL = useStylesLeftNav();
+    const classesR = useStylesRightNav();
+    return <Dialog
+        className="fila-indicador"
+        open={props.open}
+        onClose={props.onClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullScreen={fullScreen}
+        maxWidth="lg"
+    >
+        <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
+        {!props.modelo_ficha?
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
+                </DialogContentText>
+                <ImagenPreview indicador={props.indicador}/>
+                <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
+                <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
+                <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
+                <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
+                <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
+                <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
+                <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
+                <CampoFicha valor={props.indicador.uso_alc_lim} nombre="Uso, alcances y limitaciones"/>
+            </DialogContent>
+        :
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
+                </DialogContentText>
+                <ImagenPreview indicador={props.indicador}/>
+                <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
+                <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
+                <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
+                <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
+                <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
+                <CampoFicha valor={props.indicador.fuente}          nombre="Fuente"/>
+                <CampoFicha valor={props.indicador.uso_alc_lim}     nombre="Uso, alcances y limitaciones"/>
+                <CampoFicha valor={props.indicador.ultima_actualizacion} nombre="Última actualización"/>
+            </DialogContent>
+        }
+        <DialogActions>
+            <Button href={"./download/file?name=" + props.indicador.archivo +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary" variant="contained">Descargar</Button>
+            <Button onClick={props.onClose} color="primary" autoFocus>
+                Cerrar
+            </Button>
+        </DialogActions>
+        <Zoom in={secs2}>
+            <div className={classesL.root} role="presentation">
+                <Fab color="primary" onClick={props.onPrev}>
+                    <ICON.KeyboardArrowLeft fontSize="large"/>
+                </Fab>
+            </div>
+        </Zoom>
+        <Zoom in={secs2}>
+            <div className={classesR.root} role="presentation">
+                <Fab color="primary" onClick={props.onNext}>
+                    <ICON.KeyboardArrowRight fontSize="large"/>
+                </Fab>
+            </div>
+        </Zoom>
+    </Dialog>
+};
+
+const SeccionIndicador = (props:{
+    abierto:number|false,
+    indicador:Indicador, 
+    dimension:Dimension, 
+    modelo_ficha:string,
+    cambiarAbierto:(cambio:number|boolean)=>void
+})=>{
+    const [open, setOpen] = [props.abierto!==false, props.cambiarAbierto];
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -349,54 +468,15 @@ const SeccionIndicador = (props:{indicador:Indicador, dimension:Dimension, model
                 <TituloIndicador indicador={props.indicador}/>
             </div>
         </div>
-        <Dialog
-            className="fila-indicador"
-            open={open}
+        <DialogIndicador 
+            open={open} 
+            dimension={props.dimension}
+            indicador={props.indicador}
+            modelo_ficha={props.modelo_ficha}
             onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-            fullScreen={fullScreen}
-            maxWidth="lg"
-        >
-            <DialogTitle id="alert-dialog-title">{props.dimension.denominacion||''}</DialogTitle>
-            {!props.modelo_ficha?
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
-                    </DialogContentText>
-                    <ImagenPreview indicador={props.indicador}/>
-                    <CampoFicha valor={props.indicador.fuente}   nombre="Fuente"/>
-                    <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
-                    <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
-                    <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
-                    <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
-                    <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
-                    <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
-                    <CampoFicha valor={props.indicador.uso_alc_lim} nombre="Uso, alcances y limitaciones"/>
-                </DialogContent>
-            :
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {props.indicador.nombre_cuadro||props.indicador.denominacion||''}
-                    </DialogContentText>
-                    <ImagenPreview indicador={props.indicador}/>
-                    <CampoFicha valor={props.indicador.def_con}  nombre="Definición conceptual"/>
-                    <CampoFicha valor={props.indicador.def_ope}  nombre="Definición operativa"/>
-                    <CampoFicha valor={props.indicador.um}       nombre="Unidad de medida"/>
-                    <CampoFicha valor={props.indicador.universo} nombre="Universo"/>
-                    <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
-                    <CampoFicha valor={props.indicador.fuente}          nombre="Fuente"/>
-                    <CampoFicha valor={props.indicador.uso_alc_lim}     nombre="Uso, alcances y limitaciones"/>
-                    <CampoFicha valor={props.indicador.ultima_actualizacion} nombre="Última actualización"/>
-                </DialogContent>
-            }
-            <DialogActions>
-                <Button href={"./download/file?name=" + props.indicador.archivo +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary">Descargar</Button>
-                <Button onClick={handleClose} color="primary" autoFocus>
-                    Cerrar
-                </Button>
-            </DialogActions>
-        </Dialog>
+            onPrev={()=>props.abierto!==false && props.cambiarAbierto(props.abierto-1)}
+            onNext={()=>props.abierto!==false && props.cambiarAbierto(props.abierto+1)}
+        />
     </>;
 }
 
@@ -414,7 +494,13 @@ const TituloDimension = (props:{dimension:Dimension, color:string, mostrar_codig
     </div>
 )
 
-const SeccionDimension = (props:{dimension:Dimension, mostrar_codigo_dimension:boolean, modelo_ficha:string})=>{
+const SeccionDimension = (props:{
+    dimension:Dimension, 
+    abierto:number|boolean,
+    mostrar_codigo_dimension:boolean, 
+    modelo_ficha:string
+    cambiarAbierto:(cambio:number|false)=>void
+})=>{
     return <>
         <div className="caja-dimension" id={"dimension-"+props.dimension.dimension} id-dimension={props.dimension.dimension}  
             mis-filas-en-2={(Math.floor((props.dimension.indicadores.length+2-1)/2)*2+1)}
@@ -425,21 +511,46 @@ const SeccionDimension = (props:{dimension:Dimension, mostrar_codigo_dimension:b
         >
             <TituloDimension dimension={props.dimension} color={props.dimension.color} mostrar_codigo_dimension={props.mostrar_codigo_dimension}/>
             <div className="caja-int-dimension">
-                {props.dimension.indicadores.map( indicador =>
-                    <SeccionIndicador indicador={indicador} dimension={props.dimension} modelo_ficha={props.modelo_ficha} key={indicador.indicador}/>
+                {props.dimension.indicadores.map( (indicador,i) =>
+                    <SeccionIndicador 
+                        abierto={i===props.abierto && props.abierto}
+                        indicador={indicador} 
+                        dimension={props.dimension} 
+                        modelo_ficha={props.modelo_ficha} 
+                        cambiarAbierto={(cambio:number|boolean)=>props.cambiarAbierto(cambio===true?i:cambio)}
+                        key={indicador.indicador}
+                    />
                 )}
             </div>
         </div>
     </>
 }
 
-const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimension:boolean, modelo_ficha:string}) => (
-    <div id="pizarron">
-        {props.dimensiones.map( dimension =>
-            <SeccionDimension dimension={dimension} key={dimension.dimension} mostrar_codigo_dimension={props.mostrar_codigo_dimension} modelo_ficha={props.modelo_ficha}/>
+const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimension:boolean, modelo_ficha:string}) => {
+    const [abierto, setAbierto] = useState<{dimensionIdx:number, indicadorIdx:number}|false>(false);
+    return <div id="pizarron">
+        {props.dimensiones.map( (dimension,i) =>
+            <SeccionDimension 
+                abierto={abierto && abierto.dimensionIdx == i && abierto.indicadorIdx}
+                cambiarAbierto={(nuevo:number|false)=>{
+                    if(nuevo===false || nuevo==-1 && i==0 || nuevo>=dimension.indicadores.length && i >= props.dimensiones.length){
+                        setAbierto(false);
+                    }else if(nuevo==-1){
+                        setAbierto({dimensionIdx:i-1, indicadorIdx:props.dimensiones[i-1].indicadores.length-1});
+                    }else if(nuevo>=dimension.indicadores.length){
+                        setAbierto({dimensionIdx:i+1, indicadorIdx:0});
+                    }else{
+                        setAbierto({dimensionIdx:i, indicadorIdx:nuevo});
+                    }
+                }}
+                dimension={dimension} 
+                key={dimension.dimension} 
+                mostrar_codigo_dimension={props.mostrar_codigo_dimension} 
+                modelo_ficha={props.modelo_ficha}
+            />
         )}
     </div>
-)
+}
 
 const useStylesScrollTop = makeStyles((theme: Theme) =>
     createStyles({
