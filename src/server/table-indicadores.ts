@@ -8,8 +8,8 @@ export function indicadores(context:TableContext):TableDefinition{
         name:'indicadores',
         editable: es.coordinador,
         fields: [
-            {name:'orden_dimension'                                                  , typeName:'integer' , inTable:false, editable:es.admin},
             {name:'dimension'         , title:'dimensión'                            , typeName:'text' , editable:es.admin},
+            {name:'orden_dimension'                                                  , typeName:'integer', inTable:false, editable:false},
             {name:'indicador'         , title:'código indicador'                     , typeName:'text' , editable:es.coordinador, nullable:false},
             {name:'abreviacion'       , title:'abr. indicador'                       , typeName:'text' , isName:true},
             {name:'denominacion'      , title:'nombre indicador'                     , typeName:'text' },
@@ -51,7 +51,6 @@ export function indicadores(context:TableContext):TableDefinition{
                     from indicadores i inner join dimensiones d using (dimension)
             )`
         },
-        hiddenColumns:['orden_dimension','dimension'],
         sortColumns:[{column:'orden_dimension'},{column:'orden'}]
     };
 }
