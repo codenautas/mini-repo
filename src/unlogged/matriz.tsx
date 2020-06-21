@@ -75,9 +75,11 @@ export const materialIoIconsSvgPath={
     EmojiObjects: "M12 3c-.46 0-.93.04-1.4.14-2.76.53-4.96 2.76-5.48 5.52-.48 2.61.48 5.01 2.22 6.56.43.38.66.91.66 1.47V19c0 1.1.9 2 2 2h.28c.35.6.98 1 1.72 1s1.38-.4 1.72-1H14c1.1 0 2-.9 2-2v-2.31c0-.55.22-1.09.64-1.46C18.09 13.95 19 12.08 19 10c0-3.87-3.13-7-7-7zm2 16h-4v-1h4v1zm0-2h-4v-1h4v1zm-1.5-5.59V14h-1v-2.59L9.67 9.59l.71-.71L12 10.5l1.62-1.62.71.71-1.83 1.82z",
     ExpandLess: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z",
     ExpandMore: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z",
+    FirstPage: "M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z",
     Info: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z",
     Label: "M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z",
     LabelImportan: "M3.5 18.99l11 .01c.67 0 1.27-.33 1.63-.84L20.5 12l-4.37-6.16c-.36-.51-.96-.84-1.63-.84l-11 .01L8.34 12 3.5 18.99z",
+    LastPage: "M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z",
     LocalAtm: "M11 17h2v-1h1c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1h-3v-1h4V8h-2V7h-2v1h-1c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3v1H9v2h2v1zm9-13H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V6h16v12z",
     KeyboardArrowLeft: "M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z",
     KeyboardArrowRight: "M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z",
@@ -205,6 +207,9 @@ const useStylesMenu = makeStyles((theme: Theme) =>
     }),
 );
 
+const SALTO_PRIMER_INDICADOR=-9393931;
+const SALTO_ULTIMO_INDICADOR=-9393932;
+
 function SearchAppBar(props: { 
     dimensiones:Dimension[], 
     nombre_sistema:string, 
@@ -305,40 +310,6 @@ function SearchAppBar(props: {
     );
 }
 
-function useBooleanTrigger(trueSetter:(setter:()=>void)=>void){
-    const [state, setter] = useState(false);
-    trueSetter(()=>setter(true));
-    return state;
-}
-
-const useStylesLeftNav = makeStyles((theme: Theme) =>
-    createStyles({
-        arrowL: {
-            position: 'fixed',
-            opacity: 0.3,
-            // bottom: theme.spacing(20),
-            bottom: '50%',
-            left: theme.spacing(2),
-            '&:hover':{
-                opacity: 0.7
-            }
-        },
-    }),
-);
-
-const useStylesRightNav = makeStyles((theme: Theme) =>
-    createStyles({
-        arrowR: {
-            position: 'fixed',
-            opacity: 0.3,
-            bottom: '50%',
-            right: theme.spacing(2),
-            '&:hover':{
-                opacity: 0.7
-            }
-        },
-    }),
-);
 
 const TituloIndicador = (props:{indicador:Indicador})=>(
     <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion||props.indicador.nombre_cuadro}</div>
@@ -369,15 +340,16 @@ const DialogIndicador =  (props:{
     dimension:Dimension, 
     modelo_ficha:string, 
     open:boolean,
+    isFirst:boolean,
+    isLast:boolean,
     onClose:((event: {}) => void),
     onPrev:()=>void,
     onNext:()=>void,
+    onFirst:()=>void,
+    onLast:()=>void,
 })=>{
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const secs2 = useBooleanTrigger(setter=>setTimeout(setter,3000));
-    const classesL = useStylesLeftNav();
-    const classesR = useStylesRightNav();
     return <Dialog
         className="fila-indicador"
         open={props.open}
@@ -420,25 +392,23 @@ const DialogIndicador =  (props:{
             </DialogContent>
         }
         <DialogActions>
+            <Button onClick={props.onFirst} color="primary" disabled={props.isFirst}>
+                <ICON.FirstPage fontSize="large"/>
+            </Button>
+            <Button onClick={props.onPrev} color="primary" disabled={props.isFirst}>
+                <ICON.KeyboardArrowLeft fontSize="large"/>
+            </Button>
+            <Button onClick={props.onNext} color="primary" disabled={props.isLast}>
+                <ICON.KeyboardArrowRight fontSize="large"/>
+            </Button>
+            <Button onClick={props.onLast} color="primary" disabled={props.isLast}>
+                <ICON.LastPage fontSize="large"/>
+            </Button>
             <Button href={"./download/file?name=" + props.indicador.archivo +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary" variant="contained">Descargar</Button>
             <Button onClick={props.onClose} color="primary" autoFocus>
                 Cerrar
             </Button>
         </DialogActions>
-        <Zoom in={secs2}>
-            <div className={classesL.arrowL} role="presentation">
-                <Fab color="primary" onClick={props.onPrev}>
-                    <ICON.KeyboardArrowLeft fontSize="large"/>
-                </Fab>
-            </div>
-        </Zoom>
-        <Zoom in={secs2}>
-            <div className={classesR.arrowR} role="presentation">
-                <Fab color="primary" onClick={props.onNext}>
-                    <ICON.KeyboardArrowRight fontSize="large"/>
-                </Fab>
-            </div>
-        </Zoom>
     </Dialog>
 };
 
@@ -447,6 +417,8 @@ const SeccionIndicador = (props:{
     indicador:Indicador, 
     dimension:Dimension, 
     modelo_ficha:string,
+    isFirst:boolean,
+    isLast:boolean,
     cambiarAbierto:(cambio:number|boolean)=>void
 })=>{
     const [open, setOpen] = [props.abierto!==false, props.cambiarAbierto];
@@ -471,8 +443,12 @@ const SeccionIndicador = (props:{
             indicador={props.indicador}
             modelo_ficha={props.modelo_ficha}
             onClose={handleClose}
+            isFirst={props.isFirst}
+            isLast={props.isLast}
             onPrev={()=>props.abierto!==false && props.cambiarAbierto(props.abierto-1)}
             onNext={()=>props.abierto!==false && props.cambiarAbierto(props.abierto+1)}
+            onFirst={()=>props.abierto!==false && props.cambiarAbierto(SALTO_PRIMER_INDICADOR)}
+            onLast={()=>props.abierto!==false && props.cambiarAbierto(SALTO_ULTIMO_INDICADOR)}
         />
     </>;
 }
@@ -495,7 +471,9 @@ const SeccionDimension = (props:{
     dimension:Dimension, 
     abierto:number|boolean,
     mostrar_codigo_dimension:boolean, 
-    modelo_ficha:string
+    modelo_ficha:string,
+    isFirst:boolean,
+    isLast:boolean,
     cambiarAbierto:(cambio:number|false)=>void
 })=>{
     return <>
@@ -513,7 +491,9 @@ const SeccionDimension = (props:{
                         abierto={i===props.abierto && props.abierto}
                         indicador={indicador} 
                         dimension={props.dimension} 
-                        modelo_ficha={props.modelo_ficha} 
+                        modelo_ficha={props.modelo_ficha}
+                        isFirst={props.isFirst && i===0}
+                        isLast={props.isLast && i===props.dimension.indicadores.length-1}
                         cambiarAbierto={(cambio:number|boolean)=>props.cambiarAbierto(cambio===true?i:cambio)}
                         key={indicador.indicador}
                     />
@@ -532,6 +512,11 @@ const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimensi
                 cambiarAbierto={(nuevo:number|false)=>{
                     if(nuevo===false || nuevo==-1 && i==0 || nuevo>=dimension.indicadores.length && i >= props.dimensiones.length){
                         setAbierto(false);
+                    }else if(nuevo==SALTO_PRIMER_INDICADOR){
+                        setAbierto({dimensionIdx:0, indicadorIdx:0});
+                    }else if(nuevo==SALTO_ULTIMO_INDICADOR){
+                        const ultimaDimension=props.dimensiones.length-1;
+                        setAbierto({dimensionIdx:ultimaDimension, indicadorIdx:props.dimensiones[ultimaDimension].indicadores.length-1});
                     }else if(nuevo==-1){
                         setAbierto({dimensionIdx:i-1, indicadorIdx:props.dimensiones[i-1].indicadores.length-1});
                     }else if(nuevo>=dimension.indicadores.length){
@@ -542,6 +527,8 @@ const ListaIndicadores = (props:{dimensiones:Dimension[], mostrar_codigo_dimensi
                 }}
                 dimension={dimension} 
                 key={dimension.dimension} 
+                isFirst={i==0}
+                isLast={i==props.dimensiones.length-1}
                 mostrar_codigo_dimension={props.mostrar_codigo_dimension} 
                 modelo_ficha={props.modelo_ficha}
             />
