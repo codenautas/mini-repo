@@ -207,6 +207,14 @@ const useStylesMenu = makeStyles((theme: Theme) =>
     }),
 );
 
+const useStylesFicha = makeStyles((theme: Theme) =>
+    createStyles({
+        nombreCampo: {
+            color: 'black'
+        },
+    }),
+);
+
 const SALTO_PRIMER_INDICADOR=-9393931;
 const SALTO_ULTIMO_INDICADOR=-9393932;
 
@@ -310,18 +318,19 @@ function SearchAppBar(props: {
     );
 }
 
-
 const TituloIndicador = (props:{indicador:Indicador})=>(
     <div className="nombre-indicador">{props.indicador.abreviacion||props.indicador.denominacion||props.indicador.nombre_cuadro}</div>
 )
 
-const CampoFicha = (props:{valor:string, nombre:string}) =>
-    <>{props.valor?
+const CampoFicha = (props:{valor:string, nombre:string}) =>{
+    var classes = useStylesFicha();
+    return <>{props.valor?
         <DialogContentText id="alert-dialog-description">
-            <span className="ficha-nombre">{props.nombre}: </span>
+            <span className={classes.nombreCampo}>{props.nombre}: </span>
             <span className="ficha-valor">{props.valor}</span>
         </DialogContentText>
     :null}</>;
+}
 
 const ImagenPreview = (props:{indicador:Indicador}) => {
     const [fullWidth, setFullWidth] = React.useState(false);
