@@ -207,7 +207,7 @@ const useStylesMenu = makeStyles((theme: Theme) =>
     }),
 );
 
-const useStylesFicha = makeStyles((theme: Theme) =>
+const useStylesFicha = makeStyles(() =>
     createStyles({
         nombreCampo: {
             color: 'black'
@@ -413,7 +413,7 @@ const DialogIndicador =  (props:{
             <Button onClick={props.onLast} color="primary" disabled={props.isLast}>
                 <ICON.LastPage fontSize="large"/>
             </Button>
-            <Button href={"./download/file?name=" + props.indicador.archivo +"&dimension="+props.indicador.dimension} download={props.indicador.archivo} color="primary" variant="contained">Descargar</Button>
+            <Button href={"./download/file?indicador=" + props.indicador.indicador +"&dimension="+props.indicador.dimension} download={props.indicador.indicador+".xlsx"} color="primary" variant="contained">Descargar</Button>
             <Button onClick={props.onClose} color="primary" autoFocus>
                 Cerrar
             </Button>

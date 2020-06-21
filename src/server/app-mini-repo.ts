@@ -16,6 +16,7 @@ import {parametros} from "./table-parametros";
 
 import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParameters } from "backend-plus";
 import serveContent = require("serve-content");
+import { bindActionCreators } from "redux";
 
 async function recurseDir(root:string, base:string, callback:(path:string, fileName:string)=>Promise<void>){
     let files = await fs.readdir(root + base);
@@ -62,8 +63,14 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         });
         mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
         mainApp.get(baseUrl+'/download/file', async function (req, res) {
-            let path = `local-attachments/${req.query.dimension}/${req.query.name}`;
-            MiniTools.serveFile(path, {})(req, res);
+            be.inDbClient(req,async (client)=>{
+                var result = await client.query(
+                    'SELECT dimension, archivo FROM indicadores WHERE dimension = $1 AND indicador = $2',
+                    [req.query.dimension, req.query.indicador]
+                ).fetchUniqueRow();
+                let path = `local-attachments/${result.row.dimension}/${result.row.archivo}`;
+                MiniTools.serveFile(path, {})(req, res);
+            })
         });
     }
     addLoggedServices(){
