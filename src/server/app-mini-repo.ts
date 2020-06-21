@@ -113,7 +113,6 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             { type: 'js', module: 'react', modPath: 'umd', fileDeveloptment:'react.development.js', file:'react.production.min.js' },
             { type: 'js', module: 'react-dom', modPath: 'umd', fileDeveloptment:'react-dom.development.js', file:'react-dom.production.min.js' },
             { type: 'js', module: '@material-ui/core', modPath: 'umd', fileDeveloptment:'material-ui.development.js', file:'material-ui.production.min.js' },
-            { type: 'js', module: 'material-styles', fileDeveloptment:'material-styles.development.js', file:'material-styles.production.min.js' },
             ...super.clientIncludes(req, opts),
             {type:'css', file:'styles.css'},
             {type:'js' , src:'adapt.js' },

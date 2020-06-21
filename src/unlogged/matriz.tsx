@@ -27,9 +27,13 @@ import {
     Snackbar,
     SvgIcon,
     SwipeableDrawer,
+    Theme,
     Toolbar,
     Typography,
     Zoom,
+    createStyles,
+    fade,
+    makeStyles,
     useMediaQuery,
     useScrollTrigger,
     useTheme
@@ -62,15 +66,6 @@ type Dimension = {
     color:string,
     indicadores:Indicador[]
 }
-
-import {
-    // alfabéticamente:
-    Theme,
-    createStyles,
-    fade,
-    makeStyles,
-} from '@material-ui/core/styles';
-
 
 // https://material-ui.com/components/material-icons/
 export const materialIoIconsSvgPath={
@@ -197,6 +192,19 @@ function ListItemWithSubList(props:{ primary:string, secondary?:string, open:boo
     </>
 }
 
+const useStylesMenu = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            width: '100%',
+            maxWidth: 360,
+            backgroundColor: theme.palette.background.paper,
+        },
+        nested: {
+            paddingLeft: theme.spacing(4),
+        },
+    }),
+);
+
 function SearchAppBar(props: { 
     dimensiones:Dimension[], 
     nombre_sistema:string, 
@@ -220,18 +228,6 @@ function SearchAppBar(props: {
         props.onSearch(value);
     };
     const classes = useStylesSearchAppBar();
-    const useStylesMenu = makeStyles((theme: Theme) =>
-        createStyles({
-            root: {
-                width: '100%',
-                maxWidth: 360,
-                backgroundColor: theme.palette.background.paper,
-            },
-            nested: {
-                paddingLeft: theme.spacing(4),
-            },
-        }),
-    );
     const classesMenu = useStylesMenu();
     var indicadoresOrdenados = ([] as Indicador[]).concat(...props.dimensiones.map(({indicadores}:Dimension) => indicadores));
     indicadoresOrdenados.sort(compareForOrder([{column:'denominacion' as 'denominacion', order:1 as 1}]))
@@ -317,10 +313,11 @@ function useBooleanTrigger(trueSetter:(setter:()=>void)=>void){
 
 const useStylesLeftNav = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
+        arrowL: {
             position: 'fixed',
             opacity: 0.3,
-            bottom: theme.spacing(20),
+            // bottom: theme.spacing(20),
+            bottom: '50%',
             left: theme.spacing(2),
             '&:hover':{
                 opacity: 0.7
@@ -331,10 +328,10 @@ const useStylesLeftNav = makeStyles((theme: Theme) =>
 
 const useStylesRightNav = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
+        arrowR: {
             position: 'fixed',
             opacity: 0.3,
-            bottom: theme.spacing(20),
+            bottom: '50%',
             right: theme.spacing(2),
             '&:hover':{
                 opacity: 0.7
@@ -429,14 +426,14 @@ const DialogIndicador =  (props:{
             </Button>
         </DialogActions>
         <Zoom in={secs2}>
-            <div className={classesL.root} role="presentation">
+            <div className={classesL.arrowL} role="presentation">
                 <Fab color="primary" onClick={props.onPrev}>
                     <ICON.KeyboardArrowLeft fontSize="large"/>
                 </Fab>
             </div>
         </Zoom>
         <Zoom in={secs2}>
-            <div className={classesR.root} role="presentation">
+            <div className={classesR.arrowR} role="presentation">
                 <Fab color="primary" onClick={props.onNext}>
                     <ICON.KeyboardArrowRight fontSize="large"/>
                 </Fab>
