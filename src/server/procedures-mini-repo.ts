@@ -35,7 +35,7 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
             `;
             var sql=`
                 SELECT ${json(sql2, 'orden, dimension')} as dimensiones,
-                        nombre_sistema, mostrar_codigo_dimension, modelo_ficha
+                        nombre_sistema, mostrar_codigo_dimension, modelo_ficha, logos
                   FROM parametros
             `;
             fs.writeFile('local-sql-core.sql',sql);

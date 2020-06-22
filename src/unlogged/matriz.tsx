@@ -95,7 +95,6 @@ const ICON = likeAr(materialIoIconsSvgPath).map(svgText=> (props:any) =>
 
 const InfoIcon = ICON.Info;
 const KeyboardArrowUpIcon = ICON.KeyboardArrowUp;
-const MenuIcon = ICON.Menu;
 const SearchIcon = ICON.SearchIcon;
 const WarningIcon = ICON.Warning;
 
@@ -107,12 +106,35 @@ const useStylesSearchAppBar = makeStyles((theme: Theme) =>
         menuButton: {
             marginRight: theme.spacing(2),
         },
+        mas790: {
+            '@media (max-width:839px)':{
+                display:'none'
+            }
+        },
+        menos790: {
+            '@media (min-width:840px)':{
+                display:'none'
+            }
+        },
         title: {
             flexGrow: 1,
+            /*
             display: 'none',
             [theme.breakpoints.up('sm')]: {
                 display: 'block',
             },
+            */
+        },
+        normalIcon:{
+            display:'none',
+            [theme.breakpoints.up('sm')]:{
+                display:'inline',
+            }
+        },
+        miniIcon:{
+            [theme.breakpoints.up('sm')]:{
+                display:'none',
+            }
         },
         search: {
             position: 'relative',
@@ -123,7 +145,7 @@ const useStylesSearchAppBar = makeStyles((theme: Theme) =>
             },
             marginLeft: 0,
             width: '100%',
-            [theme.breakpoints.up('sm')]: {
+            '@media (min-width:840px)': {
                 marginLeft: theme.spacing(1),
                 width: 'auto',
             },
@@ -144,7 +166,7 @@ const useStylesSearchAppBar = makeStyles((theme: Theme) =>
             padding: theme.spacing(1, 1, 1, 7),
             transition: theme.transitions.create('width'),
             width: '100%',
-            [theme.breakpoints.up('sm')]: {
+            '@media (min-width:840px)': {
                 width: 120,
                 '&:focus': {
                     width: 200,
@@ -218,9 +240,12 @@ const useStylesFicha = makeStyles(() =>
 const SALTO_PRIMER_INDICADOR=-9393931;
 const SALTO_ULTIMO_INDICADOR=-9393932;
 
+type LogoDef={file:string, fileMini:string}
+
 function SearchAppBar(props: { 
     dimensiones:Dimension[], 
     nombre_sistema:string, 
+    logos:LogoDef[],
     search:string|null, 
     unlogged:boolean, 
     onSearch: (value: string) => void
@@ -230,6 +255,7 @@ function SearchAppBar(props: {
     var [irA, setIrA] = useState<string|null>(null);
     var [menuDimensiones, setMenuDimensiones] = useState(true);
     var [menuIndicadores, setMenuIndicadores] = useState(false);
+    var logos = props.logos;
     React.useEffect(()=>{
         if(irA){
             handleScroll(irA)();
@@ -256,11 +282,14 @@ function SearchAppBar(props: {
                             aria-label="open drawer"
                             onClick={()=>setMenuAbierto(true)}
                         >
-                            <MenuIcon />
+                            {""/*<MenuIcon />*/}
+                            <img className="local-logo" src="./storage/local-logo.png" />
                         </IconButton>
-                        <Typography className={classes.title} variant="h6" noWrap>
-                            {props.nombre_sistema}
-                            {props.unlogged?<img className="local-logo" src="./storage/local-logo.png" />:null}
+                        <Typography className={classes.mas790+" "+classes.title} variant="h6" noWrap>
+                            <span >{props.nombre_sistema}</span>
+                            {logos.map(logoDef=><IconButton >
+                                <img className="local-logo" src={`./storage/${logoDef.file}`} />
+                            </IconButton>)}
                         </Typography>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
@@ -277,6 +306,10 @@ function SearchAppBar(props: {
                                 onChange={handleChange}
                             />
                         </div>
+                        {logos.map(logoDef=><IconButton className={classes.menos790}>
+                            <img className={"local-logo "+classes.normalIcon+" "+classes.menos790} src={`./storage/${logoDef.file}`} />
+                            <img className={"local-logo "+classes.miniIcon} src={`./storage/${logoDef.fileMini}`} />
+                        </IconButton>)}
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
@@ -578,6 +611,7 @@ function AppMiniRepo(props:{
     dimensiones:Dimension[], 
     unlogged:boolean,
     nombre_sistema:string, 
+    logos:LogoDef[],
     mostrar_codigo_dimension:boolean,
     modelo_ficha:string
 }){
@@ -599,6 +633,7 @@ function AppMiniRepo(props:{
             <SearchAppBar 
                 dimensiones={props.dimensiones} 
                 nombre_sistema={props.nombre_sistema} 
+                logos={props.logos}
                 search={search} 
                 onSearch={searchChange} 
                 unlogged={props.unlogged}
@@ -656,6 +691,7 @@ function AppMiniRepo(props:{
 export function mostrar(result:{
     dimensiones:Dimension[],
     nombre_sistema:string,
+    logos:LogoDef[],
     mostrar_codigo_dimension:boolean,
     modelo_ficha:string
 }, unlogged:boolean){
@@ -664,6 +700,7 @@ export function mostrar(result:{
             dimensiones={result.dimensiones} 
             unlogged={unlogged}
             nombre_sistema={result.nombre_sistema} 
+            logos={result.logos}
             mostrar_codigo_dimension={result.mostrar_codigo_dimension}
              modelo_ficha={result.modelo_ficha}
         />
