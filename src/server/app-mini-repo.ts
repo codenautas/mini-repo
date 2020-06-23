@@ -16,7 +16,6 @@ import {parametros} from "./table-parametros";
 
 import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParameters } from "backend-plus";
 import serveContent = require("serve-content");
-import { bindActionCreators } from "redux";
 
 async function recurseDir(root:string, base:string, callback:(path:string, fileName:string)=>Promise<void>){
     let files = await fs.readdir(root + base);
