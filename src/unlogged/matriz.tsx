@@ -76,6 +76,7 @@ export const materialIoIconsSvgPath={
     ExpandLess: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z",
     ExpandMore: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z",
     FirstPage: "M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z",
+    GetApp: "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z",
     Info: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z",
     Label: "M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z",
     LabelImportan: "M3.5 18.99l11 .01c.67 0 1.27-.33 1.63-.84L20.5 12l-4.37-6.16c-.36-.51-.96-.84-1.63-.84l-11 .01L8.34 12 3.5 18.99z",
@@ -173,6 +174,9 @@ const useStylesSearchAppBar = makeStyles((theme: Theme) =>
                 },
             },
         },
+        swippeable:{
+            maxWidth:'80%'
+        }
     }),
 );
 
@@ -283,12 +287,12 @@ function SearchAppBar(props: {
                             onClick={()=>setMenuAbierto(true)}
                         >
                             {""/*<MenuIcon />*/}
-                            <img className="local-logo" src="./storage/local-logo.png" />
+                            <img className="local-logo" src="./img/local-logo.png" />
                         </IconButton>
                         <Typography className={classes.mas790+" "+classes.title} variant="h6" noWrap>
                             <span >{props.nombre_sistema}</span>
                             {logos.map(logoDef=><IconButton >
-                                <img className="local-logo" src={`./storage/${logoDef.file}`} />
+                                <img className="local-logo" src={`./img/${logoDef.file}`} />
                             </IconButton>)}
                         </Typography>
                         <div className={classes.search}>
@@ -307,14 +311,17 @@ function SearchAppBar(props: {
                             />
                         </div>
                         {logos.map(logoDef=><IconButton className={classes.menos790}>
-                            <img className={"local-logo "+classes.normalIcon+" "+classes.menos790} src={`./storage/${logoDef.file}`} />
-                            <img className={"local-logo "+classes.miniIcon} src={`./storage/${logoDef.fileMini}`} />
+                            <img className={"local-logo "+classes.normalIcon+" "+classes.menos790} src={`./img/${logoDef.file}`} />
+                            <img className={"local-logo "+classes.miniIcon} src={`./img/${logoDef.fileMini}`} />
                         </IconButton>)}
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
             <Toolbar id="tope" />
             <SwipeableDrawer
+                classes={{
+                    paper:classes.swippeable
+                }}
                 open={menuAbierto}
                 onClose={()=>setMenuAbierto(false)}
                 onOpen={()=>setMenuAbierto(true)}
@@ -392,6 +399,7 @@ const DialogIndicador =  (props:{
 })=>{
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const onlyIcon = useMediaQuery(theme.breakpoints.down('xs'));
     return <Dialog
         className="fila-indicador"
         open={props.open}
@@ -446,9 +454,13 @@ const DialogIndicador =  (props:{
             <Button onClick={props.onLast} color="primary" disabled={props.isLast}>
                 <ICON.LastPage fontSize="large"/>
             </Button>
-            <Button href={"./download/file?indicador=" + props.indicador.indicador +"&dimension="+props.indicador.dimension} download={props.indicador.indicador+".xlsx"} color="primary" variant="contained">Descargar</Button>
+            <Button href={"./download/file?indicador=" + props.indicador.indicador +"&dimension="+props.indicador.dimension} download={props.indicador.indicador+".xlsx"} color="primary" variant="contained">
+                {!onlyIcon?"Descargar":""}
+                <ICON.GetApp fontSize="large"/>
+            </Button>
             <Button onClick={props.onClose} color="primary" autoFocus>
-                Cerrar
+                {!onlyIcon?"Cerrar":""}
+                <ICON.Close fontSize="large"/>
             </Button>
         </DialogActions>
     </Dialog>

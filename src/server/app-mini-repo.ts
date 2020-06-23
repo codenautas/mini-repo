@@ -44,6 +44,10 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             fileUploaded: 'archivo subido',
         })
     }
+    addUnloggedServices(mainApp:backendPlus.Express, baseUrl:string){
+        mainApp.use(baseUrl+'/img',serveContent('local-attachments/img',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
+        super.addUnloggedServices(mainApp, baseUrl);
+    }
     addSchrödingerServices(mainApp:backendPlus.Express, baseUrl:string){
         var be=this;
         super.addSchrödingerServices(mainApp, baseUrl);
