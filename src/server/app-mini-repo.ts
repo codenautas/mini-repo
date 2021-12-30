@@ -14,6 +14,8 @@ import {indicadores} from "./table-indicadores";
 import {indicadores_textos} from "./table-indicadores_textos";
 import {parametros} from "./table-parametros";
 
+import {unexpected} from "cast-error"
+
 import { Context, Request, MenuDefinition, ProcedureContext, CoreFunctionParameters } from "backend-plus";
 import serveContent = require("serve-content");
 
@@ -58,7 +60,8 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
                 var foot = await fs.readFile('./local-attachments/foot.html','utf8');
                 htmlMain=htmlMain.replace(/<\/body>/,foot+"$&");
             }catch(err){
-                if(err.code!=='ENOENT'){
+                var error = unexpected(err)
+                if(error.code!=='ENOENT'){
                     throw err;
                 }
             }
@@ -66,6 +69,7 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
         });
         mainApp.use(baseUrl+'/storage',serveContent('local-attachments',{allowedExts:['xlsx', 'png', 'jpg', 'jpeg', 'gif']}));
         mainApp.get(baseUrl+'/download/file', async function (req, res) {
+            // @ts-ignore
             be.inDbClient(req,async (client)=>{
                 var result = await client.query(
                     'SELECT dimension, archivo FROM indicadores WHERE dimension = $1 AND indicador = $2',
@@ -105,8 +109,8 @@ export function emergeAppMiniRepo<T extends Constructor<backendPlus.AppBackend>>
             zip.end();
         });
     }
-    postConfig(){
-        super.postConfig();
+    async postConfig(){
+        await super.postConfig();
     }
     configStaticConfig(){
         super.configStaticConfig();

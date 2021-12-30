@@ -424,6 +424,7 @@ const DialogIndicador =  (props:{
                 <CampoFicha valor={props.indicador.cob}      nombre="Cobertura"/>
                 <CampoFicha valor={props.indicador.desagregaciones} nombre="Desagregaciones"/>
                 <CampoFicha valor={props.indicador.uso_alc_lim} nombre="Uso, alcances y limitaciones"/>
+                <CampoFicha valor={props.indicador.ultima_actualizacion} nombre="Última actualización"/>
             </DialogContent>
         :
             <DialogContent>
