@@ -16,7 +16,7 @@ export type ParametrosImagen = {
 
 myOwn.wScreens.matriz=async function(_addrParams:any){
     var result = await myOwn.ajax.matriz_traer({});
-    mostrar(result, true);
+    mostrar(result, false);
 };
 
 myOwn.clientSides.color_pick={
