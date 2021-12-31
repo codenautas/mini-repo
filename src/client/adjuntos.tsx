@@ -51,18 +51,21 @@ const PrevisualizadorImagen = function(props:{imgId:string, width: number, heigh
 					//image
 					var blob = items[i].getAsFile();
 					var URLObj = window.URL || window.webkitURL;
-                    var source = URLObj.createObjectURL(blob);
-                    setSrc(source)
-					var pastedImage = new Image();
-                    pastedImage.onload = function () {
-                        if(props.autoresize == true){
-                            setWidth(pastedImage.width);
-                            setHeight(pastedImage.height);
-                        }
-                    };
-                    pastedImage.src = source;
-					is_image = true;
-                    document.getElementById(props.imgId).losFiles = [blob]
+                    if(blob){
+                        var source = URLObj.createObjectURL(blob);
+                        setSrc(source)
+                        var pastedImage = new Image();
+                        pastedImage.onload = function () {
+                            if(props.autoresize == true){
+                                setWidth(pastedImage.width);
+                                setHeight(pastedImage.height);
+                            }
+                        };
+                        pastedImage.src = source;
+                        is_image = true;
+                        // @ts-expect-error No sabe que sí o sí existe ni que tiene losFiles
+                        document.getElementById(props.imgId).losFiles = [blob]
+                    }
 				}
 			}
 			if(is_image == true){

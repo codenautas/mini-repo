@@ -5,6 +5,7 @@ import { ProcedureContext, CoreFunctionParameters, UploadedFileInfo } from "back
 export * from "./types-mini-repo";
 import * as fs from "fs-extra";
 import * as XLSX from "xlsx-style";
+import {expected} from "cast-error"
 // import * as Path from "path";
 
 import { indicadores_textos } from "./table-indicadores_textos";
@@ -112,8 +113,9 @@ export const ProceduresMiniRepo : ProcedureDef[] = [
                         }
                     }
                 }catch(err){
+                    var error = expected(err);
                     context.informProgress({message:`ERROR en el archivo ${indicador.archivo}`});
-                    context.informProgress({message:err.message});
+                    context.informProgress({message:error.message});
                     errores++;
                 }
             };

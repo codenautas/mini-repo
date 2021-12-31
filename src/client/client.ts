@@ -1,15 +1,9 @@
 import {html} from "js-to-html";
 import * as TypedControls from "typed-controls";
-import * as bestGlobals from "best-globals";
 import {mostrar} from "../unlogged/matriz";
 import {previsualizarImagen} from "./adjuntos";
 
-import * as likeAr from "like-ar";
-import * as DialogPromise from "dialog-promise";
-
-var datetime=bestGlobals.datetime;
-var changing=bestGlobals.changing;
-
+import "dialog-promise";
 
 export type ParametrosImagen = {
     min_height_px_imagen_matriz:number
@@ -20,9 +14,9 @@ export type ParametrosImagen = {
     max_aspect_ratio_imagen_matriz:number
 }
 
-myOwn.wScreens.matriz=async function(addrParams:any){
+myOwn.wScreens.matriz=async function(_addrParams:any){
     var result = await myOwn.ajax.matriz_traer({});
-    mostrar(result);
+    mostrar(result, true);
 };
 
 myOwn.clientSides.color_pick={
@@ -97,7 +91,7 @@ myOwn.clientSides.subirAdjunto = {
                 var adjuntoDiv = html.div({id:adjuntoDivId},[]).create();
                 var botonAceptar = html.button({class:'primary-background'}, 'aceptar').create()
                 botonAceptar.onclick=async function(){
-                    var img = document.getElementById(imgId) as HTMLImageElement;
+                    var img = document.getElementById(imgId) as HTMLImageElement & {losFiles:never};
                     if(img.src){
                         var result = await my.ajax.archivo_subir({
                             campo:'preview',
@@ -116,7 +110,7 @@ myOwn.clientSides.subirAdjunto = {
                     adjuntoDiv,
                     botonCancelar,
                     botonAceptar,
-                ]).create();
+                ]).create() as HTMLDivElement & DialgoPromiseHTMLExtras;
                 var opts = {
                     buttonsDef:[]
                 };
@@ -148,9 +142,7 @@ myOwn.clientSides.bajarAdjunto = {
             td.appendChild(html.a({class:'link-descarga-archivo', href:`download/file?name=${imagenFileName}&dimension=${depot.row.dimension}`, download:imagenFileName},"imagen").create());
         }
     },
-    prepare:function(depot:myOwn.Depot, fieldName:string):void{
+    prepare:function(_depot:myOwn.Depot, _fieldName:string):void{
     }
 }
 
-if(window.myStart){
-}
