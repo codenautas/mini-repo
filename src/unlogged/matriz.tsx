@@ -287,10 +287,9 @@ function SearchAppBar(props: {
                             onClick={()=>setMenuAbierto(true)}
                         >
                             {""/*<MenuIcon />*/}
-                            <img className="local-logo" src="./img/local-logo.png" />
+                            {/* <img className="local-logo" src="./img/local-logo.png" /> */}
                         </IconButton>
                         <Typography className={classes.mas790+" "+classes.title} variant="h6" noWrap>
-                            <span >{props.nombre_sistema}</span>
                             {logos.map(logoDef=><IconButton >
                                 <img className="local-logo" src={`./img/${logoDef.file}`} />
                             </IconButton>)}
