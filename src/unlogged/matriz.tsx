@@ -290,8 +290,8 @@ function SearchAppBar(props: {
                             {/* <img className="local-logo" src="./img/local-logo.png" /> */}
                         </IconButton>
                         <Typography className={classes.mas790+" "+classes.title} variant="h6" noWrap>
-                            {logos.map(logoDef=><IconButton >
-                                <img className="local-logo" src={`./img/${logoDef.file}`} />
+                            {logos.map((logoDef, i)=><IconButton id={`icon-button-header-${i}`}>
+                                <img className="local-logo" id={`logo-header-${i}`} src={`./img/${logoDef.file}`} />
                             </IconButton>)}
                         </Typography>
                         <div className={classes.search}>
